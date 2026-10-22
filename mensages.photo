@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package chat;
+
+
+message Login {
+  string user = 1;
+}
+
+message LoginReply {
+  string status = 1; // "OK", "INVALID_USERNAME"
+}
+
+message ListChannels {}
+
+message ChannelList {
+  string status = 1;
+  repeated string channels = 2;
+}
+
+message CreateChannel {
+  string name = 1;
+  string user = 2;
+}
+
+message CreateChannelReply {
+  string status = 1; // "OK", "INVALID_CHANNEL", "CHANNEL_EXISTS"
+}
+
+message Request {
+  uint64 timestamp = 1; // ms desde a época Unix
+  oneof body {
+    Login login = 2;
+    ListChannels list_channels = 3;
+    CreateChannel create_channel = 4;
+  }
+}
+
+message Reply {
+  uint64 timestamp = 1; // ms desde a época Unix
+  oneof body {
+    LoginReply login = 2;
+    ChannelList channels = 3;
+    CreateChannelReply create_channel = 4;
+  }
+}
