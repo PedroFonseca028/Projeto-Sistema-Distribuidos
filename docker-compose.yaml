@@ -1,42 +1,54 @@
 services:
   broker:
     build: ./broker
-    network_mode: host
+
+  proxy:
+    build: ./proxy
 
   server1:
     build: ./server
-    network_mode: host
     environment:
       - SERVER_ID=1
-      - BROKER_URL=tcp://localhost:5556
+      - BROKER_URL=tcp://broker:5556
+      - PROXY_URL=tcp://proxy:5557
     volumes:
       - ./data/server1:/app/data
+    depends_on:
+      - broker
+      - proxy
 
   server2:
     build: ./server
-    network_mode: host
     environment:
       - SERVER_ID=2
-      - BROKER_URL=tcp://localhost:5556
+      - BROKER_URL=tcp://broker:5556
+      - PROXY_URL=tcp://proxy:5557
     volumes:
       - ./data/server2:/app/data
+    depends_on:
+      - broker
+      - proxy
 
   bot_ana:
     build:
       context: .
       dockerfile: Dockerfile_cliente
-    network_mode: host
     environment:
       - BOT_NAME=bot_ana
-      - BROKER_URL=tcp://localhost:5555
-      - BOT_CREATE=1
+      - BROKER_URL=tcp://broker:5555
+      - PROXY_URL=tcp://proxy:5558
+    depends_on:
+      - server1
+      - server2
 
   bot_bruno:
     build:
       context: .
       dockerfile: Dockerfile_cliente
-    network_mode: host
     environment:
       - BOT_NAME=bot_bruno
-      - BROKER_URL=tcp://localhost:5555
-      - BOT_CREATE=0
+      - BROKER_URL=tcp://broker:5555
+      - PROXY_URL=tcp://proxy:5558
+    depends_on:
+      - server1
+      - server2
