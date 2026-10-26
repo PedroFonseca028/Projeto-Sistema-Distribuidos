@@ -1,0 +1,19 @@
+{
+  "logins": [
+    {
+      "user": "bot_ana",
+      "timestamp": 1793049260596
+    },
+    {
+      "user": "bot_bruno",
+      "timestamp": 1793049260597
+    }
+  ],
+  "channels": [
+    {
+      "name": "geral",
+      "created_by": "bot_ana",
+      "timestamp": 1793049260627
+    }
+  ]
+}

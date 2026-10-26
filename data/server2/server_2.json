@@ -1,0 +1,32 @@
+{
+  "logins": [
+    {
+      "user": "bot_ana",
+      "timestamp": 1793049216123
+    },
+    {
+      "user": "bot_bruno",
+      "timestamp": 1793049216536
+    },
+    {
+      "user": "bot_ana",
+      "timestamp": 1793049236876
+    },
+    {
+      "user": "bot_bruno",
+      "timestamp": 1793049237241
+    }
+  ],
+  "channels": [
+    {
+      "name": "tecnologia",
+      "created_by": "bot_ana",
+      "timestamp": 1793049216126
+    },
+    {
+      "name": "noticias",
+      "created_by": "bot_ana",
+      "timestamp": 1793049236879
+    }
+  ]
+}
