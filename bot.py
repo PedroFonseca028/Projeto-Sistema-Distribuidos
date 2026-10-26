@@ -5,7 +5,7 @@ from datetime import datetime
 
 import zmq
 
-import messages_pb2 as pb 
+import messages_pb2 as pb
 
 BOT_NAME = os.environ.get("BOT_NAME", "bot_" + str(random.randint(1000, 9999)))
 BROKER_URL = os.environ.get("BROKER_URL", "tcp://broker:5555")
@@ -14,10 +14,17 @@ BOT_CREATE = os.environ.get("BOT_CREATE", "1") == "1"
 CHANNEL_POOL = ["geral", "tecnologia", "jogos", "musica", "noticias"]
 
 context = zmq.Context()
-socket = context.socket(zmq.REQ)
-socket.setsockopt(zmq.RCVTIMEO, 3000)  # não trava para sempre se o broker não responder
-socket.setsockopt(zmq.LINGER, 0)
-socket.connect(BROKER_URL)
+
+
+def novo_socket():
+    sock = context.socket(zmq.REQ)
+    sock.setsockopt(zmq.RCVTIMEO, 3000)
+    sock.setsockopt(zmq.LINGER, 0)
+    sock.connect(BROKER_URL)
+    return sock
+
+
+socket = novo_socket()
 
 
 def agora_ms():
@@ -29,11 +36,12 @@ def hora():
 
 
 def mostrar(direcao, msg):
-    texto = " ".join(str(msg).split())  # str() da mensagem em uma linha só
+    texto = " ".join(str(msg).split())
     print(f"[{hora()}] {direcao:<9} {texto}", flush=True)
 
 
 def enviar(req):
+    global socket
     req.timestamp = agora_ms()
     mostrar("ENVIADO", req)
     socket.send(req.SerializeToString())
@@ -42,6 +50,8 @@ def enviar(req):
         resp.ParseFromString(socket.recv())
     except zmq.Again:
         print(f"[{hora()}] ERRO      timeout sem resposta", flush=True)
+        socket.close()
+        socket = novo_socket()
         return None
     mostrar("RECEBIDO", resp)
     return resp
