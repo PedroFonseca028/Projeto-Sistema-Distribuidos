@@ -2,6 +2,7 @@ use prost::Message;
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fs;
+use std::io::Write;
 use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -9,7 +10,10 @@ mod proto {
     include!(concat!(env!("OUT_DIR"), "/chat.rs"));
 }
 
-use proto::{reply, request, ChannelList, CreateChannelReply, LoginReply, Reply, Request};
+use proto::{
+    reply, request, ChannelList, ChannelMessage, CreateChannelReply, LoginReply, PublishReply,
+    Reply, Request,
+};
 
 // Dados persistidos em data/server_<id>.json (um arquivo por servidor).
 #[derive(Serialize, Deserialize, Default)]
@@ -29,6 +33,24 @@ struct ChannelRec {
     name: String,
     created_by: String,
     timestamp: u64,
+}
+
+// Publicações ficam em data/server_<id>_messages.jsonl (uma linha JSON por publicação).
+#[derive(Serialize, Deserialize)]
+struct MessageRec {
+    channel: String,
+    user: String,
+    message: String,
+    request_timestamp: u64, // quando o bot enviou o pedido
+    timestamp: u64,         // quando o servidor publicou no canal
+}
+
+// Estado do servidor: dados em memória, arquivos de persistência e socket PUB.
+struct Server {
+    store: Store,
+    store_path: String,
+    messages_path: String,
+    publisher: zmq::Socket,
 }
 
 fn now_ms() -> u64 {
@@ -60,21 +82,36 @@ fn save(store: &Store, path: &str) {
     }
 }
 
-fn handle(raw: &[u8], store: &mut Store, path: &str) -> Vec<u8> {
-    let body = match Request::decode(raw) {
-        Ok(req) => req.body,
-        Err(_) => None,
-    };
+// Acrescenta uma linha ao arquivo, sem reescrever as publicações anteriores.
+fn append(rec: &MessageRec, path: &str) {
+    let line = serde_json::to_string(rec).unwrap();
+    let result = fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+        .and_then(|mut f| writeln!(f, "{}", line));
+    if let Err(e) = result {
+        eprintln!("erro ao salvar {}: {}", path, e);
+    }
+}
 
-    let reply_body = match body {
+fn handle(raw: &[u8], srv: &mut Server) -> Vec<u8> {
+    let req = Request::decode(raw).ok();
+    match &req {
+        Some(r) => println!("RECEBIDO  {:?}", r),
+        None => println!("RECEBIDO  mensagem inválida ({} bytes)", raw.len()),
+    }
+    let req_timestamp = req.as_ref().map_or(0, |r| r.timestamp);
+    let store = &mut srv.store;
+
+    let reply_body = match req.and_then(|r| r.body) {
         Some(request::Body::Login(login)) => {
             let status = if valid_name(&login.user, 3, 20) {
                 store.logins.push(LoginRec {
                     user: login.user.clone(),
                     timestamp: now_ms(),
                 });
-                save(store, path);
-                println!("login: {}", login.user);
+                save(store, &srv.store_path);
                 "OK"
             } else {
                 "INVALID_USERNAME"
@@ -103,11 +140,54 @@ fn handle(raw: &[u8], store: &mut Store, path: &str) -> Vec<u8> {
                     created_by: create.user.clone(),
                     timestamp: now_ms(),
                 });
-                save(store, path);
-                println!("canal criado: {} por {}", create.name, create.user);
+                save(store, &srv.store_path);
                 "OK"
             };
             reply::Body::CreateChannel(CreateChannelReply {
+                status: status.to_string(),
+            })
+        }
+
+        Some(request::Body::Publish(publish)) => {
+            let len = publish.message.chars().count();
+            let status = if !store.channels.iter().any(|c| c.name == publish.channel) {
+                "CHANNEL_NOT_FOUND"
+            } else if len == 0 || len > 500 {
+                "INVALID_MESSAGE"
+            } else {
+                let msg = ChannelMessage {
+                    timestamp: now_ms(),
+                    channel: publish.channel.clone(),
+                    user: publish.user.clone(),
+                    message: publish.message.clone(),
+                };
+                // Mensagem em 2 partes: [tópico = nome do canal, ChannelMessage serializada]
+                let sent = srv
+                    .publisher
+                    .send(msg.channel.as_bytes(), zmq::SNDMORE)
+                    .and_then(|_| srv.publisher.send(msg.encode_to_vec(), 0));
+                match sent {
+                    Ok(_) => {
+                        println!("PUBLICADO [{}] {:?}", msg.channel, msg);
+                        append(
+                            &MessageRec {
+                                channel: msg.channel,
+                                user: msg.user,
+                                message: msg.message,
+                                request_timestamp: req_timestamp,
+                                timestamp: msg.timestamp,
+                            },
+                            &srv.messages_path,
+                        );
+                        "OK"
+                    }
+                    Err(e) => {
+                        eprintln!("erro ao publicar: {}", e);
+                        "PUBLISH_ERROR"
+                    }
+                }
+            };
+            reply::Body::Publish(PublishReply {
                 status: status.to_string(),
             })
         }
@@ -119,33 +199,47 @@ fn handle(raw: &[u8], store: &mut Store, path: &str) -> Vec<u8> {
         }),
     };
 
-    Reply {
+    let reply = Reply {
         timestamp: now_ms(),
         body: Some(reply_body),
-    }
-    .encode_to_vec()
+    };
+    println!("ENVIADO   {:?}", reply);
+    reply.encode_to_vec()
 }
 
 fn main() {
     let server_id = env::var("SERVER_ID").unwrap_or_else(|_| "1".to_string());
     let broker_url = env::var("BROKER_URL").unwrap_or_else(|_| "tcp://broker:5556".to_string());
-    let path = format!("/app/data/server_{}.json", server_id);
+    let proxy_url = env::var("PROXY_URL").unwrap_or_else(|_| "tcp://proxy:5557".to_string());
+    let store_path = format!("/app/data/server_{}.json", server_id);
+    let messages_path = format!("/app/data/server_{}_messages.jsonl", server_id);
 
-    if let Some(dir) = Path::new(&path).parent() {
+    if let Some(dir) = Path::new(&store_path).parent() {
         fs::create_dir_all(dir).unwrap();
     }
-
-    let mut store = load(&path);
 
     let ctx = zmq::Context::new();
     let sock = ctx.socket(zmq::REP).unwrap();
     sock.connect(&broker_url).unwrap();
 
-    println!("servidor {} conectado em {}", server_id, broker_url);
+    let publisher = ctx.socket(zmq::PUB).unwrap();
+    publisher.connect(&proxy_url).unwrap();
+
+    println!(
+        "servidor {} conectado em {} (req/rep) e {} (pub)",
+        server_id, broker_url, proxy_url
+    );
+
+    let mut srv = Server {
+        store: load(&store_path),
+        store_path,
+        messages_path,
+        publisher,
+    };
 
     loop {
         let raw = sock.recv_bytes(0).unwrap();
-        let reply = handle(&raw, &mut store, &path);
+        let reply = handle(&raw, &mut srv);
         sock.send(&reply[..], 0).unwrap();
     }
 }
