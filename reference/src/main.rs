@@ -103,17 +103,16 @@ fn handle(raw: &[u8], reg: &mut Registry) -> Vec<u8> {
             Some(ref_reply::Body::List(ServerList { servers }))
         }
 
+        // Só confirma que o servidor está vivo. A hora agora vem do coordenador (Berkeley).
         Some(ref_request::Body::Heartbeat(h)) => match reg.servers.get_mut(&h.name) {
             Some(entry) => {
                 entry.last_seen = Instant::now();
                 Some(ref_reply::Body::Heartbeat(HeartbeatReply {
                     status: "OK".to_string(),
-                    time_ms: now_ms(),
                 }))
             }
             None => Some(ref_reply::Body::Heartbeat(HeartbeatReply {
                 status: "NAO_CADASTRADO".to_string(),
-                time_ms: now_ms(),
             })),
         },
 
