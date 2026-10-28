@@ -1,0 +1,121 @@
+syntax = "proto3";
+
+package chat;
+
+// Contrato compartilhado entre bot, broker, proxy, servidores e serviço de referência.
+// Transporte: ZeroMQ. Os tipos abaixo são serializados em binário.
+
+message Login {
+  string user = 1;
+}
+
+message LoginReply {
+  string status = 1; // "OK", "INVALID_USERNAME"
+}
+
+message ListChannels {}
+
+message ChannelList {
+  string status = 1;
+  repeated string channels = 2;
+}
+
+message CreateChannel {
+  string name = 1;
+  string user = 2;
+}
+
+message CreateChannelReply {
+  string status = 1; // "OK", "INVALID_CHANNEL", "CHANNEL_EXISTS"
+}
+
+message Publish {
+  string channel = 1;
+  string user = 2;
+  string message = 3;
+}
+
+message PublishReply {
+  string status = 1; // "OK", "CHANNEL_NOT_FOUND", "INVALID_MESSAGE"
+}
+
+// Publicação enviada pelo servidor ao proxy Pub/Sub (tópico = nome do canal).
+message ChannelMessage {
+  uint64 timestamp = 1; // ms desde a época Unix (envio da publicação)
+  string channel = 2;
+  string user = 3;
+  string message = 4;
+  uint64 clock = 5;     // relógio lógico de quem enviou
+}
+
+message Request {
+  uint64 timestamp = 1; // ms desde a época Unix
+  uint64 clock = 6;     // relógio lógico de quem enviou
+  oneof body {
+    Login login = 2;
+    ListChannels list_channels = 3;
+    CreateChannel create_channel = 4;
+    Publish publish = 5;
+  }
+}
+
+message Reply {
+  uint64 timestamp = 1; // ms desde a época Unix
+  uint64 clock = 6;     // relógio lógico de quem enviou
+  oneof body {
+    LoginReply login = 2;
+    ChannelList channels = 3;
+    CreateChannelReply create_channel = 4;
+    PublishReply publish = 5;
+  }
+}
+
+// ---------- Serviço de referência (Parte 3) ----------
+
+message Register {
+  string name = 1;
+}
+
+message RegisterReply {
+  uint32 rank = 1;
+}
+
+message ListServers {}
+
+message ServerInfo {
+  string name = 1;
+  uint32 rank = 2;
+}
+
+message ServerList {
+  repeated ServerInfo servers = 1;
+}
+
+message Heartbeat {
+  string name = 1;
+}
+
+message HeartbeatReply {
+  string status = 1;   // "OK", "NAO_CADASTRADO"
+  uint64 time_ms = 2;  // hora física da referência (ms desde a época Unix)
+}
+
+message RefRequest {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  oneof body {
+    Register register = 3;
+    ListServers list = 4;
+    Heartbeat heartbeat = 5;
+  }
+}
+
+message RefReply {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  oneof body {
+    RegisterReply register = 3;
+    ServerList list = 4;
+    HeartbeatReply heartbeat = 5;
+  }
+}

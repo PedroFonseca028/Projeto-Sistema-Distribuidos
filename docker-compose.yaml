@@ -7,6 +7,13 @@ services:
     build: ./proxy
     network_mode: host
 
+  reference:
+    build: ./reference
+    network_mode: host
+    environment:
+      - REF_URL=tcp://*:5559
+      - HEARTBEAT_TIMEOUT=10
+
   server1:
     build: ./server
     network_mode: host
@@ -14,6 +21,7 @@ services:
       - SERVER_ID=1
       - BROKER_URL=tcp://localhost:5556
       - PROXY_URL=tcp://localhost:5557
+      - REF_URL=tcp://localhost:5559
     volumes:
       - ./data/server1:/app/data
 
@@ -24,6 +32,7 @@ services:
       - SERVER_ID=2
       - BROKER_URL=tcp://localhost:5556
       - PROXY_URL=tcp://localhost:5557
+      - REF_URL=tcp://localhost:5559
     volumes:
       - ./data/server2:/app/data
 
@@ -35,7 +44,7 @@ services:
     environment:
       - BOT_NAME=bot_ana
       - BROKER_URL=tcp://localhost:5555
-      - PROXY_SUB_URL=tcp://localhost:5558
+      - PROXY_URL=tcp://localhost:5558
       - BOT_CREATE=1
 
   bot_bruno:
@@ -46,5 +55,5 @@ services:
     environment:
       - BOT_NAME=bot_bruno
       - BROKER_URL=tcp://localhost:5555
-      - PROXY_SUB_URL=tcp://localhost:5558
+      - PROXY_URL=tcp://localhost:5558
       - BOT_CREATE=0

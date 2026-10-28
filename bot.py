@@ -10,9 +10,9 @@ import messages_pb2 as pb
 BOT_NAME = os.environ.get("BOT_NAME", "bot_" + str(random.randint(1000, 9999)))
 BROKER_URL = os.environ.get("BROKER_URL", "tcp://broker:5555")
 PROXY_URL = os.environ.get("PROXY_URL", "tcp://proxy:5558")
+BOT_CREATE = os.environ.get("BOT_CREATE", "1") == "1"
 
 CHANNEL_POOL = ["geral", "tecnologia", "jogos", "musica", "noticias"]
-
 FRASES = [
     "bom dia, pessoal!",
     "alguém viu as notícias de hoje?",
@@ -29,6 +29,7 @@ context = zmq.Context()
 
 def novo_socket():
     sock = context.socket(zmq.REQ)
+    sock.setsockopt(zmq.RCVTIMEO, 3000)
     sock.setsockopt(zmq.LINGER, 0)
     sock.connect(BROKER_URL)
     return sock
@@ -61,7 +62,7 @@ def mostrar(direcao, msg):
 
 def receber_publicacao():
     topico, dados = sub.recv_multipart()
-    # O filtro do ZeroMQ é por prefixo ("jogos" também casaria "jogos2"), então confere o nome exato
+    # O filtro do ZeroMQ é por prefixo, então confere o nome exato do canal
     if topico.decode() not in inscritos:
         return
     msg = pb.ChannelMessage()
@@ -75,12 +76,13 @@ def receber_publicacao():
 
 
 def aguardar(segundos, req=None):
-    """Exibe as publicações que chegarem durante `segundos`.
-    Se `req` for informado, retorna a resposta dele assim que chegar (None no timeout)."""
+    """Mostra as publicações que chegarem durante `segundos`.
+    Se `req` for informado, devolve a resposta dele assim que chegar (None no timeout)."""
     poller = zmq.Poller()
     poller.register(sub, zmq.POLLIN)
     if req is not None:
         poller.register(req, zmq.POLLIN)
+
     limite = time.time() + segundos
     while (resto := limite - time.time()) > 0:
         eventos = dict(poller.poll(resto * 1000))
@@ -96,12 +98,15 @@ def enviar(req):
     req.timestamp = agora_ms()
     mostrar("ENVIADO", req)
     socket.send(req.SerializeToString())
+
     dados = aguardar(3, socket)
     if dados is None:
         print(f"[{hora()}] ERRO      timeout sem resposta", flush=True)
+        # REQ fica inválido após timeout: recria o socket
         socket.close()
         socket = novo_socket()
         return None
+
     resp = pb.Reply()
     resp.ParseFromString(dados)
     mostrar("RECEBIDO", resp)
@@ -131,7 +136,7 @@ while True:
         continue
 
     # Menos de 5 canais: cria um novo
-    if len(canais) < 5:
+    if BOT_CREATE and len(canais) < 5:
         disponiveis = [c for c in CHANNEL_POOL if c not in canais]
         if disponiveis:
             req = pb.Request()
@@ -154,6 +159,7 @@ while True:
         aguardar(1)
         continue
 
+    # Escolhe um canal e envia 10 mensagens com 1 segundo de intervalo
     canal = random.choice(canais)
     for _ in range(10):
         req = pb.Request()

@@ -23,6 +23,34 @@
     {
       "user": "bot_ana",
       "timestamp": 1793217995992
+    },
+    {
+      "user": "bot_ana",
+      "timestamp": 1793220061580
+    },
+    {
+      "user": "bot_bruno",
+      "timestamp": 1793220061614
+    },
+    {
+      "user": "bot_bruno",
+      "timestamp": 1793222354762
+    },
+    {
+      "user": "bot_ana",
+      "timestamp": 1793222355148
+    },
+    {
+      "user": "bot_ana",
+      "timestamp": 1793222630958
+    },
+    {
+      "user": "bot_bruno",
+      "timestamp": 1793222630989
+    },
+    {
+      "user": "bot_ana",
+      "timestamp": 1793224614884
     }
   ],
   "channels": [
@@ -45,6 +73,11 @@
       "name": "musica",
       "created_by": "bot_ana",
       "timestamp": 1793217995998
+    },
+    {
+      "name": "noticias",
+      "created_by": "bot_ana",
+      "timestamp": 1793222630966
     }
   ]
 }
