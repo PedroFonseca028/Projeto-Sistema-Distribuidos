@@ -95,9 +95,10 @@ message Heartbeat {
   string name = 1;
 }
 
+// Parte 4: a referência não devolve mais a hora (o relógio vem do coordenador).
 message HeartbeatReply {
+  reserved 2;          // antigo time_ms
   string status = 1;   // "OK", "NAO_CADASTRADO"
-  uint64 time_ms = 2;  // hora física da referência (ms desde a época Unix)
 }
 
 message RefRequest {
@@ -118,4 +119,53 @@ message RefReply {
     ServerList list = 4;
     HeartbeatReply heartbeat = 5;
   }
+}
+
+// ---------- Comunicação entre servidores (Parte 4) ----------
+
+// REQ: relógio. O relógio de quem pede vai no timestamp do PeerRequest.
+message ClockRequest {
+  string name = 1;
+}
+
+// REP: hora correta, calculada pelo coordenador com o algoritmo de Berkeley.
+message ClockReply {
+  string status = 1;   // "OK", "NAO_COORDENADOR"
+  uint64 time_ms = 2;  // hora correta (ms desde a época Unix)
+}
+
+// REQ: eleição (algoritmo do valentão: enviado aos servidores de rank maior).
+message Election {
+  string name = 1;
+  uint32 rank = 2;
+}
+
+// REP: OK
+message ElectionReply {
+  string status = 1;   // "OK"
+}
+
+message PeerRequest {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  oneof body {
+    ClockRequest clock_request = 3;
+    Election election = 4;
+  }
+}
+
+message PeerReply {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  oneof body {
+    ClockReply clock_reply = 3;
+    ElectionReply election = 4;
+  }
+}
+
+// Publicado no tópico "servers" pelo servidor eleito: [servers] [nome do coordenador]
+message Coordinator {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  string name = 3;
 }
