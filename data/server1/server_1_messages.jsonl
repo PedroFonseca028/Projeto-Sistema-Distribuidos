@@ -55,3 +55,409 @@
 {"channel":"geral","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793218049806,"timestamp":1793218049807}
 {"channel":"geral","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793218050808,"timestamp":1793218050809}
 {"channel":"geral","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793218051809,"timestamp":1793218051810}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793220063649,"timestamp":1793220063650}
+{"channel":"tecnologia","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793220064651,"timestamp":1793220064651}
+{"channel":"tecnologia","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793220065652,"timestamp":1793220065654}
+{"channel":"tecnologia","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793220066655,"timestamp":1793220066656}
+{"channel":"tecnologia","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793220067657,"timestamp":1793220067657}
+{"channel":"tecnologia","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793220068658,"timestamp":1793220068659}
+{"channel":"tecnologia","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793220069660,"timestamp":1793220069661}
+{"channel":"tecnologia","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793220070662,"timestamp":1793220070663}
+{"channel":"tecnologia","user":"bot_bruno","message":"testando o canal","request_timestamp":1793220071642,"timestamp":1793220071643}
+{"channel":"tecnologia","user":"bot_bruno","message":"testando o canal","request_timestamp":1793220072644,"timestamp":1793220072644}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793220073645,"timestamp":1793220073646}
+{"channel":"tecnologia","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793220074648,"timestamp":1793220074650}
+{"channel":"tecnologia","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793220075652,"timestamp":1793220075653}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793220076654,"timestamp":1793220076655}
+{"channel":"tecnologia","user":"bot_bruno","message":"testando o canal","request_timestamp":1793220077657,"timestamp":1793220077658}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793220078659,"timestamp":1793220078660}
+{"channel":"tecnologia","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793220079661,"timestamp":1793220079662}
+{"channel":"tecnologia","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793220080663,"timestamp":1793220080664}
+{"channel":"musica","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793220081697,"timestamp":1793220081697}
+{"channel":"musica","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793220082698,"timestamp":1793220082699}
+{"channel":"musica","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793220083700,"timestamp":1793220083701}
+{"channel":"musica","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793220084702,"timestamp":1793220084703}
+{"channel":"musica","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793220085704,"timestamp":1793220085705}
+{"channel":"musica","user":"bot_ana","message":"testando o canal","request_timestamp":1793220086705,"timestamp":1793220086707}
+{"channel":"musica","user":"bot_ana","message":"testando o canal","request_timestamp":1793220087709,"timestamp":1793220087710}
+{"channel":"musica","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793220088711,"timestamp":1793220088713}
+{"channel":"musica","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793220089714,"timestamp":1793220089715}
+{"channel":"musica","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793220090716,"timestamp":1793220090717}
+{"channel":"musica","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793220101744,"timestamp":1793220101745}
+{"channel":"musica","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793220102746,"timestamp":1793220102746}
+{"channel":"musica","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793220103747,"timestamp":1793220103748}
+{"channel":"musica","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793220104749,"timestamp":1793220104750}
+{"channel":"musica","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793220105751,"timestamp":1793220105752}
+{"channel":"musica","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793220106753,"timestamp":1793220106754}
+{"channel":"musica","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793220107755,"timestamp":1793220107756}
+{"channel":"musica","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793220108757,"timestamp":1793220108758}
+{"channel":"musica","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793220109760,"timestamp":1793220109762}
+{"channel":"musica","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793220110763,"timestamp":1793220110764}
+{"channel":"jogos","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222354773,"timestamp":1793222354773}
+{"channel":"jogos","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222355774,"timestamp":1793222355775}
+{"channel":"jogos","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222356776,"timestamp":1793222356777}
+{"channel":"jogos","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222357777,"timestamp":1793222357779}
+{"channel":"jogos","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222358779,"timestamp":1793222358780}
+{"channel":"jogos","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222359781,"timestamp":1793222359782}
+{"channel":"jogos","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222360784,"timestamp":1793222360786}
+{"channel":"jogos","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222361787,"timestamp":1793222361788}
+{"channel":"jogos","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222362789,"timestamp":1793222362789}
+{"channel":"jogos","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222363791,"timestamp":1793222363791}
+{"channel":"geral","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222365183,"timestamp":1793222365184}
+{"channel":"geral","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222366186,"timestamp":1793222366188}
+{"channel":"geral","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222367189,"timestamp":1793222367189}
+{"channel":"geral","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222368191,"timestamp":1793222368192}
+{"channel":"geral","user":"bot_ana","message":"testando o canal","request_timestamp":1793222369192,"timestamp":1793222369193}
+{"channel":"geral","user":"bot_ana","message":"testando o canal","request_timestamp":1793222370194,"timestamp":1793222370195}
+{"channel":"geral","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222371196,"timestamp":1793222371196}
+{"channel":"geral","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222372197,"timestamp":1793222372198}
+{"channel":"geral","user":"bot_ana","message":"testando o canal","request_timestamp":1793222373199,"timestamp":1793222373200}
+{"channel":"geral","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222374201,"timestamp":1793222374203}
+{"channel":"jogos","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222385238,"timestamp":1793222385239}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222386242,"timestamp":1793222386247}
+{"channel":"jogos","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222387248,"timestamp":1793222387249}
+{"channel":"jogos","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222388250,"timestamp":1793222388251}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222389254,"timestamp":1793222389255}
+{"channel":"jogos","user":"bot_ana","message":"testando o canal","request_timestamp":1793222390256,"timestamp":1793222390257}
+{"channel":"jogos","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222391257,"timestamp":1793222391259}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222392260,"timestamp":1793222392261}
+{"channel":"jogos","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222393261,"timestamp":1793222393262}
+{"channel":"musica","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222630967,"timestamp":1793222630969}
+{"channel":"geral","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222630997,"timestamp":1793222630998}
+{"channel":"musica","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222631972,"timestamp":1793222631973}
+{"channel":"musica","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222632975,"timestamp":1793222632975}
+{"channel":"musica","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222633977,"timestamp":1793222633978}
+{"channel":"musica","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222634979,"timestamp":1793222634982}
+{"channel":"musica","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222635986,"timestamp":1793222635987}
+{"channel":"musica","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222636989,"timestamp":1793222636989}
+{"channel":"musica","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222637990,"timestamp":1793222637992}
+{"channel":"musica","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222638993,"timestamp":1793222638994}
+{"channel":"musica","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222639995,"timestamp":1793222639996}
+{"channel":"tecnologia","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222642003,"timestamp":1793222642003}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222643005,"timestamp":1793222643006}
+{"channel":"tecnologia","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222644007,"timestamp":1793222644008}
+{"channel":"tecnologia","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222645013,"timestamp":1793222645014}
+{"channel":"tecnologia","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222646015,"timestamp":1793222646016}
+{"channel":"tecnologia","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222647018,"timestamp":1793222647018}
+{"channel":"tecnologia","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222648021,"timestamp":1793222648022}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222649023,"timestamp":1793222649023}
+{"channel":"tecnologia","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222650024,"timestamp":1793222650025}
+{"channel":"noticias","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222652034,"timestamp":1793222652035}
+{"channel":"noticias","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222653038,"timestamp":1793222653039}
+{"channel":"noticias","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222654040,"timestamp":1793222654041}
+{"channel":"noticias","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222655042,"timestamp":1793222655044}
+{"channel":"noticias","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222656045,"timestamp":1793222656046}
+{"channel":"noticias","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222657047,"timestamp":1793222657048}
+{"channel":"noticias","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222658050,"timestamp":1793222658051}
+{"channel":"noticias","user":"bot_ana","message":"testando o canal","request_timestamp":1793222659052,"timestamp":1793222659053}
+{"channel":"noticias","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222660055,"timestamp":1793222660056}
+{"channel":"tecnologia","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222662060,"timestamp":1793222662061}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222663062,"timestamp":1793222663063}
+{"channel":"tecnologia","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222664065,"timestamp":1793222664066}
+{"channel":"tecnologia","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222665068,"timestamp":1793222665068}
+{"channel":"tecnologia","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222666069,"timestamp":1793222666071}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222667073,"timestamp":1793222667074}
+{"channel":"tecnologia","user":"bot_ana","message":"testando o canal","request_timestamp":1793222668077,"timestamp":1793222668078}
+{"channel":"tecnologia","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222669079,"timestamp":1793222669079}
+{"channel":"tecnologia","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222670081,"timestamp":1793222670082}
+{"channel":"tecnologia","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222672089,"timestamp":1793222672090}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222673093,"timestamp":1793222673094}
+{"channel":"jogos","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222674095,"timestamp":1793222674096}
+{"channel":"jogos","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222675098,"timestamp":1793222675099}
+{"channel":"jogos","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222676102,"timestamp":1793222676103}
+{"channel":"jogos","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222677107,"timestamp":1793222677108}
+{"channel":"jogos","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222678115,"timestamp":1793222678115}
+{"channel":"jogos","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222679117,"timestamp":1793222679118}
+{"channel":"jogos","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222680121,"timestamp":1793222680121}
+{"channel":"jogos","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222681126,"timestamp":1793222681127}
+{"channel":"noticias","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222682130,"timestamp":1793222682131}
+{"channel":"noticias","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222683133,"timestamp":1793222683134}
+{"channel":"noticias","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222684135,"timestamp":1793222684136}
+{"channel":"jogos","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222685137,"timestamp":1793222685138}
+{"channel":"noticias","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222686143,"timestamp":1793222686145}
+{"channel":"jogos","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222687148,"timestamp":1793222687150}
+{"channel":"noticias","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222688154,"timestamp":1793222688155}
+{"channel":"noticias","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222689156,"timestamp":1793222689157}
+{"channel":"noticias","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222690158,"timestamp":1793222690159}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222691162,"timestamp":1793222691163}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222691166,"timestamp":1793222691166}
+{"channel":"jogos","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222692168,"timestamp":1793222692171}
+{"channel":"jogos","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222693174,"timestamp":1793222693175}
+{"channel":"jogos","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222694179,"timestamp":1793222694180}
+{"channel":"jogos","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222695182,"timestamp":1793222695183}
+{"channel":"jogos","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222696186,"timestamp":1793222696187}
+{"channel":"jogos","user":"bot_ana","message":"testando o canal","request_timestamp":1793222697188,"timestamp":1793222697189}
+{"channel":"jogos","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222698191,"timestamp":1793222698191}
+{"channel":"jogos","user":"bot_ana","message":"testando o canal","request_timestamp":1793222699195,"timestamp":1793222699195}
+{"channel":"jogos","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222700196,"timestamp":1793222700197}
+{"channel":"tecnologia","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222701193,"timestamp":1793222701194}
+{"channel":"tecnologia","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222702196,"timestamp":1793222702197}
+{"channel":"tecnologia","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222703200,"timestamp":1793222703201}
+{"channel":"tecnologia","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222704202,"timestamp":1793222704203}
+{"channel":"tecnologia","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222705205,"timestamp":1793222705206}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222706210,"timestamp":1793222706211}
+{"channel":"tecnologia","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222707214,"timestamp":1793222707215}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222708216,"timestamp":1793222708217}
+{"channel":"tecnologia","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222709219,"timestamp":1793222709220}
+{"channel":"tecnologia","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222710226,"timestamp":1793222710227}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222712233,"timestamp":1793222712234}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222713237,"timestamp":1793222713238}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222714239,"timestamp":1793222714240}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222715242,"timestamp":1793222715243}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222716244,"timestamp":1793222716245}
+{"channel":"tecnologia","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222717247,"timestamp":1793222717249}
+{"channel":"tecnologia","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222718251,"timestamp":1793222718253}
+{"channel":"musica","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222719254,"timestamp":1793222719255}
+{"channel":"tecnologia","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222720257,"timestamp":1793222720258}
+{"channel":"noticias","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222721262,"timestamp":1793222721263}
+{"channel":"noticias","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222722264,"timestamp":1793222722266}
+{"channel":"tecnologia","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222723268,"timestamp":1793222723269}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222724271,"timestamp":1793222724272}
+{"channel":"noticias","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222725274,"timestamp":1793222725275}
+{"channel":"noticias","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222726276,"timestamp":1793222726278}
+{"channel":"noticias","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222727280,"timestamp":1793222727282}
+{"channel":"noticias","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222728284,"timestamp":1793222728285}
+{"channel":"tecnologia","user":"bot_ana","message":"testando o canal","request_timestamp":1793222729287,"timestamp":1793222729288}
+{"channel":"noticias","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222730291,"timestamp":1793222730292}
+{"channel":"jogos","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222731299,"timestamp":1793222731300}
+{"channel":"jogos","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222732302,"timestamp":1793222732303}
+{"channel":"jogos","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222733310,"timestamp":1793222733311}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222734315,"timestamp":1793222734316}
+{"channel":"jogos","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222735318,"timestamp":1793222735318}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222736321,"timestamp":1793222736322}
+{"channel":"jogos","user":"bot_ana","message":"testando o canal","request_timestamp":1793222737324,"timestamp":1793222737325}
+{"channel":"jogos","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222738327,"timestamp":1793222738328}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222739330,"timestamp":1793222739331}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222740332,"timestamp":1793222740333}
+{"channel":"jogos","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222741321,"timestamp":1793222741322}
+{"channel":"jogos","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222742323,"timestamp":1793222742324}
+{"channel":"jogos","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222743327,"timestamp":1793222743328}
+{"channel":"jogos","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222744329,"timestamp":1793222744330}
+{"channel":"jogos","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222745331,"timestamp":1793222745332}
+{"channel":"jogos","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222746334,"timestamp":1793222746335}
+{"channel":"jogos","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222747337,"timestamp":1793222747338}
+{"channel":"jogos","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222748341,"timestamp":1793222748342}
+{"channel":"jogos","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222749344,"timestamp":1793222749344}
+{"channel":"jogos","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222750346,"timestamp":1793222750347}
+{"channel":"tecnologia","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222752354,"timestamp":1793222752355}
+{"channel":"tecnologia","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222753361,"timestamp":1793222753362}
+{"channel":"tecnologia","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222754365,"timestamp":1793222754366}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222755368,"timestamp":1793222755369}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222756372,"timestamp":1793222756373}
+{"channel":"tecnologia","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222757380,"timestamp":1793222757381}
+{"channel":"tecnologia","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222758385,"timestamp":1793222758386}
+{"channel":"tecnologia","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222759388,"timestamp":1793222759389}
+{"channel":"tecnologia","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222760391,"timestamp":1793222760392}
+{"channel":"musica","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222762399,"timestamp":1793222762400}
+{"channel":"musica","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222763402,"timestamp":1793222763404}
+{"channel":"geral","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222764405,"timestamp":1793222764406}
+{"channel":"musica","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222765407,"timestamp":1793222765409}
+{"channel":"musica","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222766411,"timestamp":1793222766415}
+{"channel":"geral","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222767420,"timestamp":1793222767422}
+{"channel":"musica","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222768425,"timestamp":1793222768426}
+{"channel":"geral","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222769428,"timestamp":1793222769429}
+{"channel":"musica","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222770431,"timestamp":1793222770432}
+{"channel":"jogos","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222771438,"timestamp":1793222771438}
+{"channel":"jogos","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222772441,"timestamp":1793222772442}
+{"channel":"jogos","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222773448,"timestamp":1793222773448}
+{"channel":"jogos","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222774450,"timestamp":1793222774451}
+{"channel":"jogos","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222775455,"timestamp":1793222775455}
+{"channel":"jogos","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222776457,"timestamp":1793222776458}
+{"channel":"jogos","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222777459,"timestamp":1793222777460}
+{"channel":"jogos","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222778462,"timestamp":1793222778463}
+{"channel":"jogos","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222779466,"timestamp":1793222779466}
+{"channel":"jogos","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222780468,"timestamp":1793222780469}
+{"channel":"jogos","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222782476,"timestamp":1793222782478}
+{"channel":"musica","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222783480,"timestamp":1793222783482}
+{"channel":"musica","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222784484,"timestamp":1793222784485}
+{"channel":"musica","user":"bot_ana","message":"testando o canal","request_timestamp":1793222785486,"timestamp":1793222785487}
+{"channel":"musica","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222786489,"timestamp":1793222786490}
+{"channel":"musica","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222787491,"timestamp":1793222787492}
+{"channel":"musica","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222788495,"timestamp":1793222788496}
+{"channel":"musica","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222789498,"timestamp":1793222789499}
+{"channel":"musica","user":"bot_ana","message":"testando o canal","request_timestamp":1793222790502,"timestamp":1793222790504}
+{"channel":"jogos","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222791510,"timestamp":1793222791512}
+{"channel":"noticias","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222791516,"timestamp":1793222791517}
+{"channel":"noticias","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222792520,"timestamp":1793222792521}
+{"channel":"noticias","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222793522,"timestamp":1793222793523}
+{"channel":"noticias","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222794525,"timestamp":1793222794526}
+{"channel":"noticias","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222795529,"timestamp":1793222795530}
+{"channel":"noticias","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222796533,"timestamp":1793222796533}
+{"channel":"noticias","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222797535,"timestamp":1793222797537}
+{"channel":"noticias","user":"bot_ana","message":"testando o canal","request_timestamp":1793222798539,"timestamp":1793222798539}
+{"channel":"noticias","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222799540,"timestamp":1793222799544}
+{"channel":"noticias","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222800546,"timestamp":1793222800549}
+{"channel":"tecnologia","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222801553,"timestamp":1793222801553}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222802555,"timestamp":1793222802555}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222803556,"timestamp":1793222803557}
+{"channel":"tecnologia","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222804558,"timestamp":1793222804559}
+{"channel":"tecnologia","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222805560,"timestamp":1793222805561}
+{"channel":"tecnologia","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222806562,"timestamp":1793222806562}
+{"channel":"tecnologia","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222807563,"timestamp":1793222807564}
+{"channel":"tecnologia","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222808565,"timestamp":1793222808566}
+{"channel":"tecnologia","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222809567,"timestamp":1793222809568}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222810569,"timestamp":1793222810570}
+{"channel":"geral","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222811572,"timestamp":1793222811573}
+{"channel":"geral","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222812574,"timestamp":1793222812575}
+{"channel":"noticias","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222813577,"timestamp":1793222813577}
+{"channel":"geral","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222814579,"timestamp":1793222814579}
+{"channel":"geral","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222815581,"timestamp":1793222815581}
+{"channel":"geral","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222816582,"timestamp":1793222816583}
+{"channel":"geral","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222817585,"timestamp":1793222817585}
+{"channel":"geral","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222818587,"timestamp":1793222818588}
+{"channel":"geral","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222819590,"timestamp":1793222819590}
+{"channel":"geral","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222820592,"timestamp":1793222820592}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222821595,"timestamp":1793222821596}
+{"channel":"tecnologia","user":"bot_ana","message":"testando o canal","request_timestamp":1793222822597,"timestamp":1793222822599}
+{"channel":"tecnologia","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222823600,"timestamp":1793222823601}
+{"channel":"tecnologia","user":"bot_ana","message":"testando o canal","request_timestamp":1793222824603,"timestamp":1793222824603}
+{"channel":"tecnologia","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222825605,"timestamp":1793222825607}
+{"channel":"tecnologia","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222826609,"timestamp":1793222826610}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222827612,"timestamp":1793222827614}
+{"channel":"tecnologia","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222828617,"timestamp":1793222828618}
+{"channel":"tecnologia","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222829620,"timestamp":1793222829621}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222830622,"timestamp":1793222830622}
+{"channel":"noticias","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222832627,"timestamp":1793222832628}
+{"channel":"noticias","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222833630,"timestamp":1793222833631}
+{"channel":"geral","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222834632,"timestamp":1793222834633}
+{"channel":"noticias","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222835635,"timestamp":1793222835636}
+{"channel":"noticias","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222836638,"timestamp":1793222836639}
+{"channel":"noticias","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222837640,"timestamp":1793222837641}
+{"channel":"geral","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222838641,"timestamp":1793222838642}
+{"channel":"geral","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222839644,"timestamp":1793222839644}
+{"channel":"geral","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222840645,"timestamp":1793222840646}
+{"channel":"tecnologia","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222841649,"timestamp":1793222841650}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222842653,"timestamp":1793222842654}
+{"channel":"tecnologia","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222843656,"timestamp":1793222843656}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222844658,"timestamp":1793222844659}
+{"channel":"tecnologia","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222845661,"timestamp":1793222845662}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222846664,"timestamp":1793222846665}
+{"channel":"tecnologia","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222847666,"timestamp":1793222847667}
+{"channel":"tecnologia","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222848669,"timestamp":1793222848671}
+{"channel":"tecnologia","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222849673,"timestamp":1793222849674}
+{"channel":"tecnologia","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222850675,"timestamp":1793222850676}
+{"channel":"jogos","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222851679,"timestamp":1793222851679}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222852682,"timestamp":1793222852683}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222853685,"timestamp":1793222853686}
+{"channel":"jogos","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222854687,"timestamp":1793222854688}
+{"channel":"jogos","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793222855689,"timestamp":1793222855690}
+{"channel":"jogos","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222856692,"timestamp":1793222856693}
+{"channel":"jogos","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222857694,"timestamp":1793222857695}
+{"channel":"jogos","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222858697,"timestamp":1793222858698}
+{"channel":"jogos","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222859699,"timestamp":1793222859701}
+{"channel":"jogos","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793222860706,"timestamp":1793222860707}
+{"channel":"jogos","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222861711,"timestamp":1793222861711}
+{"channel":"jogos","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222862714,"timestamp":1793222862715}
+{"channel":"geral","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222863717,"timestamp":1793222863718}
+{"channel":"geral","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222864720,"timestamp":1793222864721}
+{"channel":"geral","user":"bot_ana","message":"testando o canal","request_timestamp":1793222865723,"timestamp":1793222865724}
+{"channel":"jogos","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222866726,"timestamp":1793222866727}
+{"channel":"jogos","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222867729,"timestamp":1793222867730}
+{"channel":"geral","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222868731,"timestamp":1793222868732}
+{"channel":"geral","user":"bot_ana","message":"testando o canal","request_timestamp":1793222869733,"timestamp":1793222869734}
+{"channel":"geral","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222870736,"timestamp":1793222870736}
+{"channel":"musica","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222871740,"timestamp":1793222871740}
+{"channel":"geral","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793222872742,"timestamp":1793222872743}
+{"channel":"geral","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793222873744,"timestamp":1793222873745}
+{"channel":"musica","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222874747,"timestamp":1793222874748}
+{"channel":"geral","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222875749,"timestamp":1793222875749}
+{"channel":"musica","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222876751,"timestamp":1793222876751}
+{"channel":"musica","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222877753,"timestamp":1793222877754}
+{"channel":"geral","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793222878755,"timestamp":1793222878756}
+{"channel":"geral","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222879758,"timestamp":1793222879758}
+{"channel":"geral","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793222880759,"timestamp":1793222880761}
+{"channel":"musica","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222881767,"timestamp":1793222881769}
+{"channel":"musica","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793222882775,"timestamp":1793222882776}
+{"channel":"musica","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222883777,"timestamp":1793222883778}
+{"channel":"musica","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793222884779,"timestamp":1793222884780}
+{"channel":"musica","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222885782,"timestamp":1793222885782}
+{"channel":"noticias","user":"bot_bruno","message":"testando o canal","request_timestamp":1793222886784,"timestamp":1793222886786}
+{"channel":"noticias","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793222887791,"timestamp":1793222887792}
+{"channel":"musica","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793222888794,"timestamp":1793222888795}
+{"channel":"musica","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222889798,"timestamp":1793222889799}
+{"channel":"noticias","user":"bot_bruno","message":"quem vai no evento amanhã?","request_timestamp":1793222890800,"timestamp":1793222890801}
+{"channel":"tecnologia","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793222891804,"timestamp":1793222891804}
+{"channel":"tecnologia","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793222892805,"timestamp":1793222892809}
+{"channel":"tecnologia","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793222893812,"timestamp":1793222893814}
+{"channel":"musica","user":"bot_ana","message":"testando o canal","request_timestamp":1793223053002,"timestamp":1793223053003}
+{"channel":"musica","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793223054007,"timestamp":1793223054008}
+{"channel":"musica","user":"bot_ana","message":"testando o canal","request_timestamp":1793223055011,"timestamp":1793223055012}
+{"channel":"musica","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793223056014,"timestamp":1793223056015}
+{"channel":"musica","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793223057016,"timestamp":1793223057016}
+{"channel":"musica","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793223058018,"timestamp":1793223058018}
+{"channel":"musica","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793223059020,"timestamp":1793223059020}
+{"channel":"musica","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793223060024,"timestamp":1793223060025}
+{"channel":"musica","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793223061028,"timestamp":1793223061029}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793223062024,"timestamp":1793223062025}
+{"channel":"noticias","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793223062032,"timestamp":1793223062033}
+{"channel":"noticias","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793223063036,"timestamp":1793223063037}
+{"channel":"noticias","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793223064038,"timestamp":1793223064039}
+{"channel":"noticias","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793223065042,"timestamp":1793223065043}
+{"channel":"noticias","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793223066046,"timestamp":1793223066048}
+{"channel":"noticias","user":"bot_ana","message":"testando o canal","request_timestamp":1793223067050,"timestamp":1793223067051}
+{"channel":"noticias","user":"bot_ana","message":"testando o canal","request_timestamp":1793223068052,"timestamp":1793223068054}
+{"channel":"noticias","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793223069056,"timestamp":1793223069057}
+{"channel":"noticias","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793223070058,"timestamp":1793223070059}
+{"channel":"noticias","user":"bot_ana","message":"testando o canal","request_timestamp":1793223071061,"timestamp":1793223071063}
+{"channel":"tecnologia","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793223072058,"timestamp":1793223072060}
+{"channel":"noticias","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793223072069,"timestamp":1793223072069}
+{"channel":"noticias","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793223073071,"timestamp":1793223073073}
+{"channel":"noticias","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793223074074,"timestamp":1793223074075}
+{"channel":"noticias","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793223075076,"timestamp":1793223075077}
+{"channel":"noticias","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793223076078,"timestamp":1793223076080}
+{"channel":"noticias","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793223077081,"timestamp":1793223077082}
+{"channel":"noticias","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793223078084,"timestamp":1793223078086}
+{"channel":"noticias","user":"bot_ana","message":"testando o canal","request_timestamp":1793223079087,"timestamp":1793223079088}
+{"channel":"noticias","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793223080089,"timestamp":1793223080090}
+{"channel":"noticias","user":"bot_ana","message":"testando o canal","request_timestamp":1793223081091,"timestamp":1793223081092}
+{"channel":"noticias","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793223082092,"timestamp":1793223082093}
+{"channel":"tecnologia","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793223082096,"timestamp":1793223082096}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793223083098,"timestamp":1793223083099}
+{"channel":"tecnologia","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793223084100,"timestamp":1793223084102}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793223085103,"timestamp":1793223085104}
+{"channel":"tecnologia","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793223086105,"timestamp":1793223086106}
+{"channel":"tecnologia","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793223087108,"timestamp":1793223087109}
+{"channel":"noticias","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793223088113,"timestamp":1793223088114}
+{"channel":"noticias","user":"bot_bruno","message":"acabei de terminar o trabalho","request_timestamp":1793223089117,"timestamp":1793223089119}
+{"channel":"noticias","user":"bot_bruno","message":"zeromq é muito prático","request_timestamp":1793223090121,"timestamp":1793223090122}
+{"channel":"noticias","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793223091123,"timestamp":1793223091124}
+{"channel":"tecnologia","user":"bot_bruno","message":"o servidor está respondendo rápido","request_timestamp":1793223092127,"timestamp":1793223092127}
+{"channel":"tecnologia","user":"bot_bruno","message":"bom dia, pessoal!","request_timestamp":1793223093128,"timestamp":1793223093129}
+{"channel":"tecnologia","user":"bot_bruno","message":"recomendações de música?","request_timestamp":1793223094131,"timestamp":1793223094133}
+{"channel":"tecnologia","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793223095134,"timestamp":1793223095135}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793223096138,"timestamp":1793223096139}
+{"channel":"tecnologia","user":"bot_bruno","message":"alguém viu as notícias de hoje?","request_timestamp":1793223097142,"timestamp":1793223097143}
+{"channel":"tecnologia","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793223098146,"timestamp":1793223098146}
+{"channel":"tecnologia","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793223099149,"timestamp":1793223099150}
+{"channel":"tecnologia","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793223100152,"timestamp":1793223100154}
+{"channel":"tecnologia","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793223101155,"timestamp":1793223101157}
+{"channel":"noticias","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793223102163,"timestamp":1793223102163}
+{"channel":"noticias","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793223103167,"timestamp":1793223103168}
+{"channel":"noticias","user":"bot_ana","message":"bom dia, pessoal!","request_timestamp":1793223104170,"timestamp":1793223104172}
+{"channel":"noticias","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793223105176,"timestamp":1793223105176}
+{"channel":"noticias","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793223106178,"timestamp":1793223106178}
+{"channel":"noticias","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793223107180,"timestamp":1793223107182}
+{"channel":"noticias","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793223108183,"timestamp":1793223108184}
+{"channel":"noticias","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793223109186,"timestamp":1793223109187}
+{"channel":"geral","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793224614894,"timestamp":1793224614897}
+{"channel":"geral","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793224615899,"timestamp":1793224615900}
+{"channel":"geral","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793224616901,"timestamp":1793224616902}
+{"channel":"geral","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793224617903,"timestamp":1793224617904}
+{"channel":"geral","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793224618904,"timestamp":1793224618905}
+{"channel":"geral","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793224619906,"timestamp":1793224619907}
+{"channel":"geral","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793224620908,"timestamp":1793224620908}
+{"channel":"geral","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793224621910,"timestamp":1793224621911}
+{"channel":"geral","user":"bot_ana","message":"testando o canal","request_timestamp":1793224622912,"timestamp":1793224622913}
+{"channel":"geral","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793224623914,"timestamp":1793224623914}
+{"channel":"jogos","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793224625919,"timestamp":1793224625920}
+{"channel":"jogos","user":"bot_ana","message":"quem vai no evento amanhã?","request_timestamp":1793224626922,"timestamp":1793224626923}
+{"channel":"jogos","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793224627923,"timestamp":1793224627924}
+{"channel":"jogos","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793224628925,"timestamp":1793224628925}
+{"channel":"jogos","user":"bot_ana","message":"o servidor está respondendo rápido","request_timestamp":1793224629927,"timestamp":1793224629927}
+{"channel":"jogos","user":"bot_ana","message":"zeromq é muito prático","request_timestamp":1793224630928,"timestamp":1793224630928}
+{"channel":"jogos","user":"bot_ana","message":"alguém viu as notícias de hoje?","request_timestamp":1793224631929,"timestamp":1793224631929}
+{"channel":"jogos","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793224632931,"timestamp":1793224632931}
+{"channel":"jogos","user":"bot_ana","message":"testando o canal","request_timestamp":1793224633934,"timestamp":1793224633934}
+{"channel":"noticias","user":"bot_ana","message":"testando o canal","request_timestamp":1793224635939,"timestamp":1793224635939}
+{"channel":"noticias","user":"bot_ana","message":"acabei de terminar o trabalho","request_timestamp":1793224636941,"timestamp":1793224636941}
+{"channel":"noticias","user":"bot_ana","message":"recomendações de música?","request_timestamp":1793224637943,"timestamp":1793224637943}

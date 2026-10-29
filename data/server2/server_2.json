@@ -15,6 +15,18 @@
     {
       "user": "bot_bruno",
       "timestamp": 1793049237241
+    },
+    {
+      "user": "bot_ana",
+      "timestamp": 1793223051934
+    },
+    {
+      "user": "bot_bruno",
+      "timestamp": 1793223051972
+    },
+    {
+      "user": "bot_bruno",
+      "timestamp": 1793224614982
     }
   ],
   "channels": [
@@ -27,6 +39,21 @@
       "name": "noticias",
       "created_by": "bot_ana",
       "timestamp": 1793049236879
+    },
+    {
+      "name": "jogos",
+      "created_by": "bot_ana",
+      "timestamp": 1793222691164
+    },
+    {
+      "name": "musica",
+      "created_by": "bot_ana",
+      "timestamp": 1793222791512
+    },
+    {
+      "name": "geral",
+      "created_by": "bot_ana",
+      "timestamp": 1793222811572
     }
   ]
 }
