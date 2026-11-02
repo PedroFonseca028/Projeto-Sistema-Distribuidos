@@ -151,6 +151,7 @@ message PeerRequest {
   oneof body {
     ClockRequest clock_request = 3;
     Election election = 4;
+    SyncRequest sync = 5;
   }
 }
 
@@ -160,6 +161,7 @@ message PeerReply {
   oneof body {
     ClockReply clock_reply = 3;
     ElectionReply election = 4;
+    SyncReply sync = 5;
   }
 }
 
@@ -168,4 +170,65 @@ message Coordinator {
   uint64 timestamp = 1;
   uint64 clock = 2;
   string name = 3;
+}
+
+// ---------- Replicação (Parte 5) ----------
+
+message LoginRecord {
+  string user = 1;
+}
+
+message ChannelRecord {
+  string name = 1;
+  string created_by = 2;
+}
+
+message MessageRecord {
+  string channel = 1;
+  string user = 2;
+  string message = 3;
+  uint64 request_timestamp = 4; // quando o bot enviou o pedido
+}
+
+// Uma operação de escrita aceita por algum servidor. (origin, seq) identifica o registro.
+message Record {
+  string origin = 1;    // "<servidor>@<início da execução>" que aceitou a escrita
+  uint64 seq = 2;       // número de sequência na origem (1, 2, 3, ...)
+  uint64 timestamp = 3; // hora física (Berkeley) em que a origem aceitou
+  uint64 clock = 4;     // relógio lógico da origem nesse momento
+  oneof data {
+    LoginRecord login = 5;
+    ChannelRecord channel = 6;
+    MessageRecord message = 7;
+  }
+}
+
+// Push: publicado no tópico "replica" a cada escrita aceita: [replica] [Replica]
+message Replica {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  Record record = 3;
+}
+
+// Intervalo [first, last] de números de sequência que um servidor já tem.
+message SeqRange {
+  uint64 first = 1;
+  uint64 last = 2;
+}
+
+// Vetor de versões: para cada origem, os intervalos de seq já recebidos.
+message Known {
+  string origin = 1;
+  repeated SeqRange ranges = 2;
+}
+
+// Pull (anti-entropia): REQ: "tenho isto" -> REP: registros que faltam.
+message SyncRequest {
+  string name = 1;
+  repeated Known known = 2;
+}
+
+message SyncReply {
+  repeated Record records = 1;
+  bool more = 2;        // true se ainda há registros (a resposta tem um limite)
 }

@@ -1,6 +1,6 @@
 use prost::Message;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::{BTreeSet, HashMap};
 use std::env;
 use std::fs;
 use std::io::Write;
@@ -13,20 +13,28 @@ mod proto {
 }
 
 use proto::{
-    peer_reply, peer_request, ref_reply, ref_request, reply, request, ChannelList, ChannelMessage,
-    ClockReply, ClockRequest, Coordinator, CreateChannelReply, Election, ElectionReply, Heartbeat,
-    ListServers, LoginReply, PeerReply, PeerRequest, PublishReply, RefReply, RefRequest, Register,
-    Reply, Request,
+    peer_reply, peer_request, record, ref_reply, ref_request, reply, request, ChannelList,
+    ChannelMessage, ChannelRecord, ClockReply, ClockRequest, Coordinator, CreateChannelReply,
+    Election, ElectionReply, Heartbeat, Known, ListServers, LoginRecord, LoginReply, MessageRecord,
+    PeerReply, PeerRequest, PublishReply, Record, RefReply, RefRequest, Register, Replica, Reply,
+    Request, SeqRange, SyncReply, SyncRequest,
 };
 
 // Tópico do Pub/Sub em que o servidor eleito anuncia que é o coordenador.
 const TOPICO_SERVERS: &str = "servers";
+// Tópico do Pub/Sub em que cada servidor publica as escritas que aceitou (réplica por push).
+const TOPICO_REPLICA: &str = "replica";
 // Heartbeat a cada 10 mensagens de clientes e sincronização do relógio a cada 15.
 const MSGS_HEARTBEAT: u32 = 10;
 const MSGS_SYNC: u32 = 15;
 // Com pouco tráfego, manda heartbeat por tempo para não sair da lista da referência
 // (a eleição depende da lista e dos ranks da referência).
 const INTERVALO_HEARTBEAT: Duration = Duration::from_secs(5);
+// Anti-entropia: a cada 5 s pede a outro servidor os registros que ainda não tem.
+const INTERVALO_ANTI_ENTROPIA: Duration = Duration::from_secs(5);
+// Máximo de registros por resposta de sincronização e de rodadas seguidas com o mesmo servidor.
+const LIMITE_SYNC: usize = 500;
+const MAX_RODADAS_SYNC: usize = 50;
 // Tempo máximo esperando a resposta da referência e de outro servidor.
 const TIMEOUT_REF: Duration = Duration::from_secs(3);
 const TIMEOUT_PEER: Duration = Duration::from_secs(1);
@@ -44,10 +52,18 @@ struct Store {
     channels: Vec<ChannelRec>,
 }
 
+// Todo registro tem origin + seq (identificador único da escrita) e o relógio lógico da
+// origem. Os campos têm valor padrão para ler os arquivos gravados antes da replicação.
 #[derive(Serialize, Deserialize)]
 struct LoginRec {
     user: String,
     timestamp: u64,
+    #[serde(default)]
+    origin: String,
+    #[serde(default)]
+    seq: u64,
+    #[serde(default)]
+    clock: u64,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -55,6 +71,12 @@ struct ChannelRec {
     name: String,
     created_by: String,
     timestamp: u64,
+    #[serde(default)]
+    origin: String,
+    #[serde(default)]
+    seq: u64,
+    #[serde(default)]
+    clock: u64,
 }
 
 // Publicações ficam em data/server_<id>_messages.jsonl (uma linha JSON por publicação).
@@ -64,12 +86,19 @@ struct MessageRec {
     user: String,
     message: String,
     request_timestamp: u64, // quando o bot enviou o pedido
-    timestamp: u64,         // quando o servidor publicou no canal
+    timestamp: u64,         // quando o servidor de origem publicou no canal
+    #[serde(default)]
+    origin: String,
+    #[serde(default)]
+    seq: u64,
+    #[serde(default)]
+    clock: u64,
 }
 
 // Estado do servidor.
 struct Server {
     store: Store,
+    mensagens: Vec<MessageRec>, // cópia em memória do arquivo de publicações
     store_path: String,
     messages_path: String,
     publisher: zmq::Socket,
@@ -84,6 +113,11 @@ struct Server {
     anuncio_enviado: Option<Instant>, // anunciou e o anúncio ainda não voltou pelo proxy
     // Só no coordenador: diferença entre o relógio de cada servidor e o seu (Berkeley)
     diferencas: HashMap<String, (i64, Instant)>,
+    // Replicação: origem das escritas desta execução, último seq usado e os ids já guardados
+    origem: String,
+    seq: u64,
+    possui: HashMap<String, BTreeSet<u64>>,
+    proximo_sync: usize, // revezamento entre os servidores na anti-entropia
 }
 
 // Sockets e endereços para falar com a referência e com os outros servidores.
@@ -91,8 +125,8 @@ struct Rede {
     ctx: zmq::Context,
     ref_sock: zmq::Socket,
     ref_url: String,
-    peer: zmq::Socket, // REP: pedidos de outros servidores (relógio e eleição)
-    sub: zmq::Socket,  // SUB: anúncios do coordenador no tópico "servers"
+    peer: zmq::Socket, // REP: pedidos de outros servidores (relógio, eleição e sincronização)
+    sub: zmq::Socket,  // SUB: tópicos "servers" (coordenador) e "replica" (escritas)
     peer_host: String,
     peer_base: u32,
 }
@@ -124,10 +158,47 @@ fn valid_name(name: &str, min: usize, max: usize) -> bool {
 }
 
 fn load(path: &str) -> Store {
-    match fs::read_to_string(path) {
-        Ok(text) => serde_json::from_str(&text).unwrap_or_default(),
-        Err(_) => Store::default(),
+    let text = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(_) => return Store::default(),
+    };
+    match serde_json::from_str(&text) {
+        Ok(store) => store,
+        Err(e) => {
+            // Não perde o arquivo ilegível: guarda uma cópia antes de começar do zero
+            let copia = format!("{}.invalido", path);
+            eprintln!("erro ao ler {}: {} (cópia em {})", path, e, copia);
+            let _ = fs::copy(path, copia);
+            Store::default()
+        }
     }
+}
+
+// Lê as publicações, uma por linha. Devolve também se o arquivo precisa ser regravado
+// (linha inválida ou última linha sem quebra, por exemplo se o container caiu gravando).
+fn load_mensagens(path: &str) -> (Vec<MessageRec>, bool) {
+    let text = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(_) => return (Vec::new(), false),
+    };
+    let mut mensagens = Vec::new();
+    let mut regravar = !text.is_empty() && !text.ends_with('\n');
+    for (i, line) in text.lines().enumerate() {
+        if line.trim().is_empty() {
+            continue;
+        }
+        match serde_json::from_str(line) {
+            Ok(m) => mensagens.push(m),
+            Err(e) => {
+                eprintln!("{}: linha {} ignorada ({})", path, i + 1, e);
+                regravar = true;
+            }
+        }
+    }
+    if regravar {
+        let _ = fs::copy(path, format!("{}.invalido", path));
+    }
+    (mensagens, regravar)
 }
 
 // Grava em arquivo temporário e renomeia, para não corromper o arquivo se o container cair.
@@ -139,17 +210,430 @@ fn save(store: &Store, path: &str) {
     }
 }
 
-// Acrescenta uma linha ao arquivo, sem reescrever as publicações anteriores.
-fn append(rec: &MessageRec, path: &str) {
-    let line = serde_json::to_string(rec).unwrap();
+// Regrava o arquivo de publicações inteiro (só na migração ou depois de uma linha inválida).
+fn save_mensagens(mensagens: &[MessageRec], path: &str) {
+    let tmp = format!("{}.tmp", path);
+    let mut text = String::new();
+    for m in mensagens {
+        text.push_str(&serde_json::to_string(m).unwrap());
+        text.push('\n');
+    }
+    if let Err(e) = fs::write(&tmp, text).and_then(|_| fs::rename(&tmp, path)) {
+        eprintln!("erro ao salvar {}: {}", path, e);
+    }
+}
+
+// Acrescenta uma linha por publicação ao arquivo, sem reescrever as anteriores.
+fn append(recs: &[MessageRec], path: &str) {
+    if recs.is_empty() {
+        return;
+    }
+    let mut text = String::new();
+    for rec in recs {
+        text.push_str(&serde_json::to_string(rec).unwrap());
+        text.push('\n');
+    }
     let result = fs::OpenOptions::new()
         .create(true)
         .append(true)
         .open(path)
-        .and_then(|mut f| writeln!(f, "{}", line));
+        .and_then(|mut f| f.write_all(text.as_bytes()));
     if let Err(e) = result {
         eprintln!("erro ao salvar {}: {}", path, e);
     }
+}
+
+// Registros gravados antes da replicação não têm origin/seq. Eles recebem a origem
+// "<nome>@legado" e um seq na ordem dos arquivos, e os arquivos são regravados com os ids.
+// Assim o histórico antigo de cada servidor também é replicado para os outros.
+fn migrar_legado(srv: &mut Server, regravar_mensagens: bool) {
+    let origem = format!("{}@legado", srv.nome);
+    let mut seq = srv
+        .store
+        .logins
+        .iter()
+        .filter(|r| r.origin == origem)
+        .map(|r| r.seq)
+        .chain(
+            srv.store
+                .channels
+                .iter()
+                .filter(|r| r.origin == origem)
+                .map(|r| r.seq),
+        )
+        .chain(
+            srv.mensagens
+                .iter()
+                .filter(|r| r.origin == origem)
+                .map(|r| r.seq),
+        )
+        .max()
+        .unwrap_or(0);
+    let inicio = seq;
+
+    for r in srv.store.logins.iter_mut().filter(|r| r.origin.is_empty()) {
+        seq += 1;
+        r.origin = origem.clone();
+        r.seq = seq;
+    }
+    for r in srv
+        .store
+        .channels
+        .iter_mut()
+        .filter(|r| r.origin.is_empty())
+    {
+        seq += 1;
+        r.origin = origem.clone();
+        r.seq = seq;
+    }
+    let antes_mensagens = seq;
+    for r in srv.mensagens.iter_mut().filter(|r| r.origin.is_empty()) {
+        seq += 1;
+        r.origin = origem.clone();
+        r.seq = seq;
+    }
+
+    if antes_mensagens > inicio {
+        save(&srv.store, &srv.store_path);
+    }
+    if seq > antes_mensagens || regravar_mensagens {
+        save_mensagens(&srv.mensagens, &srv.messages_path);
+    }
+    if seq > inicio {
+        println!(
+            "REPLICA   {} registros antigos migrados com a origem {}",
+            seq - inicio,
+            origem
+        );
+    }
+}
+
+// Monta o índice (origem -> seqs) de tudo que já está guardado.
+fn indexar(srv: &mut Server) {
+    let ids: Vec<(String, u64)> = srv
+        .store
+        .logins
+        .iter()
+        .map(|r| (r.origin.clone(), r.seq))
+        .chain(srv.store.channels.iter().map(|r| (r.origin.clone(), r.seq)))
+        .chain(srv.mensagens.iter().map(|r| (r.origin.clone(), r.seq)))
+        .collect();
+    for (origin, seq) in ids {
+        srv.possui.entry(origin).or_default().insert(seq);
+    }
+}
+
+fn login_record(r: &LoginRec) -> Record {
+    Record {
+        origin: r.origin.clone(),
+        seq: r.seq,
+        timestamp: r.timestamp,
+        clock: r.clock,
+        data: Some(record::Data::Login(LoginRecord {
+            user: r.user.clone(),
+        })),
+    }
+}
+
+fn channel_record(r: &ChannelRec) -> Record {
+    Record {
+        origin: r.origin.clone(),
+        seq: r.seq,
+        timestamp: r.timestamp,
+        clock: r.clock,
+        data: Some(record::Data::Channel(ChannelRecord {
+            name: r.name.clone(),
+            created_by: r.created_by.clone(),
+        })),
+    }
+}
+
+fn message_record(r: &MessageRec) -> Record {
+    Record {
+        origin: r.origin.clone(),
+        seq: r.seq,
+        timestamp: r.timestamp,
+        clock: r.clock,
+        data: Some(record::Data::Message(MessageRecord {
+            channel: r.channel.clone(),
+            user: r.user.clone(),
+            message: r.message.clone(),
+            request_timestamp: r.request_timestamp,
+        })),
+    }
+}
+
+// Guarda um registro, criado aqui ou vindo de outro servidor. Como (origin, seq) é único,
+// receber o mesmo registro de novo não muda nada. Devolve true se o registro era novo.
+// Com persistir = false só guarda em memória: quem chamou grava o lote inteiro de uma vez.
+fn aplicar(srv: &mut Server, rec: Record, persistir: bool) -> bool {
+    let data = match rec.data {
+        Some(data) if !rec.origin.is_empty() && rec.seq > 0 => data,
+        _ => return false,
+    };
+    if !srv
+        .possui
+        .entry(rec.origin.clone())
+        .or_default()
+        .insert(rec.seq)
+    {
+        return false;
+    }
+    match data {
+        record::Data::Login(l) => {
+            srv.store.logins.push(LoginRec {
+                user: l.user,
+                timestamp: rec.timestamp,
+                origin: rec.origin,
+                seq: rec.seq,
+                clock: rec.clock,
+            });
+            if persistir {
+                save(&srv.store, &srv.store_path);
+            }
+        }
+        record::Data::Channel(c) => {
+            srv.store.channels.push(ChannelRec {
+                name: c.name,
+                created_by: c.created_by,
+                timestamp: rec.timestamp,
+                origin: rec.origin,
+                seq: rec.seq,
+                clock: rec.clock,
+            });
+            if persistir {
+                save(&srv.store, &srv.store_path);
+            }
+        }
+        record::Data::Message(m) => {
+            let msg = MessageRec {
+                channel: m.channel,
+                user: m.user,
+                message: m.message,
+                request_timestamp: m.request_timestamp,
+                timestamp: rec.timestamp,
+                origin: rec.origin,
+                seq: rec.seq,
+                clock: rec.clock,
+            };
+            if persistir {
+                append(std::slice::from_ref(&msg), &srv.messages_path);
+            }
+            srv.mensagens.push(msg);
+        }
+    }
+    true
+}
+
+// Escrita aceita por este servidor: ganha o próximo seq desta origem, é guardada e
+// publicada no tópico "replica" para os outros servidores (push).
+fn escrever(srv: &mut Server, timestamp: u64, data: record::Data) {
+    srv.seq += 1;
+    let rec = Record {
+        origin: srv.origem.clone(),
+        seq: srv.seq,
+        timestamp,
+        clock: srv.clock,
+        data: Some(data),
+    };
+    aplicar(srv, rec.clone(), true);
+
+    srv.clock += 1;
+    let msg = Replica {
+        timestamp: agora(srv.offset_ms),
+        clock: srv.clock,
+        record: Some(rec),
+    };
+    let sent = srv
+        .publisher
+        .send(TOPICO_REPLICA.as_bytes(), zmq::SNDMORE)
+        .and_then(|_| srv.publisher.send(msg.encode_to_vec(), 0));
+    match sent {
+        Ok(_) => println!("PUBLICADO [{}] {:?}", TOPICO_REPLICA, msg),
+        // Os outros servidores recebem o registro depois, pela anti-entropia
+        Err(e) => eprintln!("erro ao replicar: {}", e),
+    }
+}
+
+// Escrita aceita por outro servidor, recebida pelo tópico "replica".
+fn receber_replica(srv: &mut Server, dados: &[u8]) {
+    let msg = match Replica::decode(dados) {
+        Ok(m) => m,
+        Err(_) => {
+            println!("réplica inválida no tópico {}", TOPICO_REPLICA);
+            return;
+        }
+    };
+    srv.clock = srv.clock.max(msg.clock) + 1;
+    let rec = match msg.record {
+        // O próprio registro volta pelo proxy e já está guardado
+        Some(ref r) if r.origin == srv.origem => return,
+        Some(ref r) => r.clone(),
+        None => return,
+    };
+    println!("RECEBIDO  [{}] {:?}", TOPICO_REPLICA, msg);
+    let id = format!("{}#{}", rec.origin, rec.seq);
+    if aplicar(srv, rec, true) {
+        println!("REPLICA   registro {} guardado", id);
+    }
+}
+
+// Vetor de versões: para cada origem, os intervalos de seq que este servidor já tem.
+fn vetor_versoes(srv: &Server) -> Vec<Known> {
+    srv.possui
+        .iter()
+        .map(|(origin, seqs)| {
+            let mut ranges: Vec<SeqRange> = Vec::new();
+            for &s in seqs {
+                match ranges.last_mut() {
+                    Some(r) if r.last + 1 == s => r.last = s,
+                    _ => ranges.push(SeqRange { first: s, last: s }),
+                }
+            }
+            Known {
+                origin: origin.clone(),
+                ranges,
+            }
+        })
+        .collect()
+}
+
+// Responde à anti-entropia: todos os registros que quem pediu ainda não tem.
+fn registros_faltando(srv: &Server, known: &[Known]) -> SyncReply {
+    let mapa: HashMap<&str, &Vec<SeqRange>> = known
+        .iter()
+        .map(|k| (k.origin.as_str(), &k.ranges))
+        .collect();
+    let tem = |origin: &str, seq: u64| {
+        mapa.get(origin).map_or(false, |rs| {
+            rs.iter().any(|r| r.first <= seq && seq <= r.last)
+        })
+    };
+
+    let mut faltam: Vec<Record> = Vec::new();
+    for r in srv
+        .store
+        .logins
+        .iter()
+        .filter(|r| !tem(r.origin.as_str(), r.seq))
+    {
+        faltam.push(login_record(r));
+    }
+    for r in srv
+        .store
+        .channels
+        .iter()
+        .filter(|r| !tem(r.origin.as_str(), r.seq))
+    {
+        faltam.push(channel_record(r));
+    }
+    for r in srv
+        .mensagens
+        .iter()
+        .filter(|r| !tem(r.origin.as_str(), r.seq))
+    {
+        faltam.push(message_record(r));
+    }
+
+    // Em ordem de origem e seq, para que quem pediu receba cada origem sem buracos
+    faltam.sort_by(|a, b| (&a.origin, a.seq).cmp(&(&b.origin, b.seq)));
+    let more = faltam.len() > LIMITE_SYNC;
+    faltam.truncate(LIMITE_SYNC);
+    SyncReply {
+        records: faltam,
+        more,
+    }
+}
+
+// Pede a um servidor os registros que faltam, em rodadas, até não faltar mais nada.
+fn sincronizar_dados(srv: &mut Server, rede: &Rede, nome: &str) {
+    for _ in 0..MAX_RODADAS_SYNC {
+        let body = peer_request::Body::Sync(SyncRequest {
+            name: srv.nome.clone(),
+            known: vetor_versoes(srv),
+        });
+        let resposta = match peer_call(srv, rede, nome, body) {
+            Some(PeerReply {
+                body: Some(peer_reply::Body::Sync(s)),
+                ..
+            }) => s,
+            _ => return,
+        };
+        let total = resposta.records.len();
+        let mut novos = 0;
+        let mut store_mudou = false;
+        let inicio = srv.mensagens.len();
+        for rec in resposta.records {
+            let e_mensagem = matches!(rec.data, Some(record::Data::Message(_)));
+            if aplicar(srv, rec, false) {
+                novos += 1;
+                store_mudou |= !e_mensagem;
+            }
+        }
+        // Grava o lote de uma vez: as publicações novas são as do fim da lista
+        if store_mudou {
+            save(&srv.store, &srv.store_path);
+        }
+        append(&srv.mensagens[inicio..], &srv.messages_path);
+        if total > 0 {
+            println!(
+                "REPLICA   anti-entropia com {}: {} registros recebidos, {} novos",
+                nome, total, novos
+            );
+        }
+        // Para quando não falta mais nada (ou quando a rodada não trouxe nada novo)
+        if !resposta.more || novos == 0 {
+            return;
+        }
+    }
+}
+
+// Anti-entropia (pull). Na partida sincroniza com todos os servidores; depois, a cada
+// INTERVALO_ANTI_ENTROPIA, com um servidor por vez, em revezamento.
+fn anti_entropia(srv: &mut Server, rede: &mut Rede, todos: bool) {
+    let mut outros: Vec<(u32, String)> =
+        match ref_call(srv, rede, ref_request::Body::List(ListServers {})) {
+            Some(RefReply {
+                body: Some(ref_reply::Body::List(l)),
+                ..
+            }) => l
+                .servers
+                .into_iter()
+                .filter(|s| s.name != srv.nome)
+                .map(|s| (s.rank, s.name))
+                .collect(),
+            _ => return,
+        };
+    if outros.is_empty() {
+        return;
+    }
+    outros.sort();
+
+    if todos {
+        for (_, nome) in &outros {
+            sincronizar_dados(srv, rede, nome);
+        }
+    } else {
+        let (_, nome) = &outros[srv.proximo_sync % outros.len()];
+        srv.proximo_sync = srv.proximo_sync.wrapping_add(1);
+        sincronizar_dados(srv, rede, nome);
+    }
+}
+
+// Lista de canais sem repetição (o mesmo canal pode ter sido criado em dois servidores ao
+// mesmo tempo), na ordem de criação: hora, relógio lógico e origem para desempate.
+fn canais(srv: &Server) -> Vec<String> {
+    let mut lista: Vec<&ChannelRec> = srv.store.channels.iter().collect();
+    lista.sort_by(|a, b| {
+        (a.timestamp, a.clock, &a.origin, a.seq).cmp(&(b.timestamp, b.clock, &b.origin, b.seq))
+    });
+    let mut nomes: Vec<String> = Vec::new();
+    for c in lista {
+        if !nomes.contains(&c.name) {
+            nomes.push(c.name.clone());
+        }
+    }
+    nomes
 }
 
 // Cria o socket REQ para a referência. Usado de novo se der timeout.
@@ -213,6 +697,21 @@ fn ref_call(srv: &mut Server, rede: &mut Rede, body: ref_request::Body) -> Optio
     Some(rep)
 }
 
+// Texto da resposta para o log. A resposta da anti-entropia pode ter centenas de
+// registros, então mostra só a quantidade.
+fn resumo(rep: &PeerReply) -> String {
+    match &rep.body {
+        Some(peer_reply::Body::Sync(s)) => format!(
+            "PeerReply {{ timestamp: {}, clock: {}, body: Some(Sync({} registros, more: {})) }}",
+            rep.timestamp,
+            rep.clock,
+            s.records.len(),
+            s.more
+        ),
+        _ => format!("{:?}", rep),
+    }
+}
+
 // Faz uma requisição a outro servidor. Devolve None se ele não responder a tempo.
 fn peer_call(
     srv: &mut Server,
@@ -244,7 +743,7 @@ fn peer_call(
     };
     let rep = PeerReply::decode(&raw[..]).ok()?;
     srv.clock = srv.clock.max(rep.clock) + 1;
-    println!("RECEBIDO  [{}] {:?}", nome, rep);
+    println!("RECEBIDO  [{}] {}", nome, resumo(&rep));
     Some(rep)
 }
 
@@ -371,17 +870,24 @@ fn virar_coordenador(srv: &mut Server) {
     println!("ELEIÇÃO   {} é o novo coordenador", srv.nome);
 }
 
-// Recebe o anúncio de um novo coordenador no tópico "servers".
-fn receber_anuncio(srv: &mut Server, sub: &zmq::Socket) {
-    let partes = match sub.recv_multipart(0) {
-        Ok(p) => p,
-        Err(_) => return,
-    };
-    // O filtro do ZeroMQ é por prefixo, então confere o tópico exato
-    if partes.len() != 2 || partes[0] != TOPICO_SERVERS.as_bytes() {
-        return;
+// Lê tudo o que chegou no SUB e separa pelo tópico.
+fn receber_sub(srv: &mut Server, sub: &zmq::Socket) {
+    while let Ok(partes) = sub.recv_multipart(zmq::DONTWAIT) {
+        // O filtro do ZeroMQ é por prefixo, então confere o tópico exato
+        if partes.len() != 2 {
+            continue;
+        }
+        if partes[0] == TOPICO_SERVERS.as_bytes() {
+            receber_anuncio(srv, &partes[1]);
+        } else if partes[0] == TOPICO_REPLICA.as_bytes() {
+            receber_replica(srv, &partes[1]);
+        }
     }
-    let msg = match Coordinator::decode(&partes[1][..]) {
+}
+
+// Recebe o anúncio de um novo coordenador no tópico "servers".
+fn receber_anuncio(srv: &mut Server, dados: &[u8]) {
+    let msg = match Coordinator::decode(dados) {
         Ok(m) => m,
         Err(_) => {
             println!("anúncio inválido no tópico {}", TOPICO_SERVERS);
@@ -494,6 +1000,11 @@ fn handle_peer(raw: &[u8], srv: &mut Server) -> Vec<u8> {
             }))
         }
 
+        // REQ: o que eu tenho -> REP: os registros que faltam (anti-entropia)
+        Some(peer_request::Body::Sync(s)) => {
+            Some(peer_reply::Body::Sync(registros_faltando(srv, &s.known)))
+        }
+
         None => None,
     };
 
@@ -503,7 +1014,7 @@ fn handle_peer(raw: &[u8], srv: &mut Server) -> Vec<u8> {
         clock: srv.clock,
         body,
     };
-    println!("ENVIADO   {:?}", reply);
+    println!("ENVIADO   {}", resumo(&reply));
     reply.encode_to_vec()
 }
 
@@ -574,11 +1085,13 @@ fn handle(raw: &[u8], srv: &mut Server) -> Vec<u8> {
     let body = match req.body {
         Some(request::Body::Login(login)) => {
             let status = if valid_name(&login.user, 3, 20) {
-                srv.store.logins.push(LoginRec {
-                    user: login.user.clone(),
-                    timestamp: agora(offset),
-                });
-                save(&srv.store, &srv.store_path);
+                escrever(
+                    srv,
+                    agora(offset),
+                    record::Data::Login(LoginRecord {
+                        user: login.user.clone(),
+                    }),
+                );
                 println!("login: {}", login.user);
                 "OK"
             } else {
@@ -589,27 +1102,27 @@ fn handle(raw: &[u8], srv: &mut Server) -> Vec<u8> {
             })
         }
 
-        Some(request::Body::ListChannels(_)) => {
-            let names = srv.store.channels.iter().map(|c| c.name.clone()).collect();
-            reply::Body::Channels(ChannelList {
-                status: "OK".to_string(),
-                channels: names,
-            })
-        }
+        Some(request::Body::ListChannels(_)) => reply::Body::Channels(ChannelList {
+            status: "OK".to_string(),
+            channels: canais(srv),
+        }),
 
         Some(request::Body::CreateChannel(create)) => {
-            // "servers" é o tópico reservado para o anúncio do coordenador
-            let status = if !valid_name(&create.name, 3, 30) || create.name == TOPICO_SERVERS {
+            // "servers" e "replica" são tópicos reservados para a comunicação entre servidores
+            let reservado = create.name == TOPICO_SERVERS || create.name == TOPICO_REPLICA;
+            let status = if !valid_name(&create.name, 3, 30) || reservado {
                 "INVALID_CHANNEL"
             } else if srv.store.channels.iter().any(|c| c.name == create.name) {
                 "CHANNEL_EXISTS"
             } else {
-                srv.store.channels.push(ChannelRec {
-                    name: create.name.clone(),
-                    created_by: create.user.clone(),
-                    timestamp: agora(offset),
-                });
-                save(&srv.store, &srv.store_path);
+                escrever(
+                    srv,
+                    agora(offset),
+                    record::Data::Channel(ChannelRecord {
+                        name: create.name.clone(),
+                        created_by: create.user.clone(),
+                    }),
+                );
                 println!("canal criado: {} por {}", create.name, create.user);
                 "OK"
             };
@@ -641,15 +1154,16 @@ fn handle(raw: &[u8], srv: &mut Server) -> Vec<u8> {
                 match sent {
                     Ok(_) => {
                         println!("PUBLICADO [{}] {:?}", msg.channel, msg);
-                        append(
-                            &MessageRec {
+                        // Mesma hora e relógio lógico da publicação no canal
+                        escrever(
+                            srv,
+                            msg.timestamp,
+                            record::Data::Message(MessageRecord {
                                 channel: msg.channel,
                                 user: msg.user,
                                 message: msg.message,
                                 request_timestamp: req_timestamp,
-                                timestamp: msg.timestamp,
-                            },
-                            &srv.messages_path,
+                            }),
                         );
                         "OK"
                     }
@@ -714,15 +1228,16 @@ fn main() {
     let publisher = ctx.socket(zmq::PUB).unwrap();
     publisher.connect(&proxy_url).unwrap();
 
-    // Pedidos de outros servidores (relógio e eleição)
+    // Pedidos de outros servidores (relógio, eleição e sincronização)
     let peer_url = format!("tcp://*:{}", peer_base + id);
     let peer = ctx.socket(zmq::REP).unwrap();
     peer.bind(&peer_url).unwrap();
 
-    // Anúncios do coordenador, publicados pelos servidores no proxy
+    // Anúncios do coordenador e réplicas das escritas, publicados pelos servidores no proxy
     let sub = ctx.socket(zmq::SUB).unwrap();
     sub.connect(&sub_url).unwrap();
     sub.set_subscribe(TOPICO_SERVERS.as_bytes()).unwrap();
+    sub.set_subscribe(TOPICO_REPLICA.as_bytes()).unwrap();
 
     let mut rede = Rede {
         ref_sock: novo_ref(&ctx, &ref_url),
@@ -734,12 +1249,17 @@ fn main() {
         peer_base,
     };
 
+    let nome = format!("server{}", server_id);
+    let (mensagens, regravar_mensagens) = load_mensagens(&messages_path);
     let mut srv = Server {
         store: load(&store_path),
+        mensagens,
         store_path,
         messages_path,
         publisher,
-        nome: format!("server{}", server_id),
+        // Cada execução é uma origem nova, então um seq nunca é reutilizado após reiniciar
+        origem: format!("{}@{}", nome, now_ms()),
+        nome,
         rank: 0,
         clock: 0,
         offset_ms: offset_inicial,
@@ -749,20 +1269,41 @@ fn main() {
         aguardando_desde: None,
         anuncio_enviado: None,
         diferencas: HashMap::new(),
+        seq: 0,
+        possui: HashMap::new(),
+        proximo_sync: 0,
     };
+    migrar_legado(&mut srv, regravar_mensagens);
+    indexar(&mut srv);
 
     println!(
-        "servidor {} conectado em {} (req/rep), {} (pub), {} (sub [{}]), referência em {} e servidores em {}",
-        server_id, broker_url, proxy_url, sub_url, TOPICO_SERVERS, rede.ref_url, peer_url
+        "servidor {} conectado em {} (req/rep), {} (pub), {} (sub [{}, {}]), referência em {} e servidores em {}",
+        server_id, broker_url, proxy_url, sub_url, TOPICO_SERVERS, TOPICO_REPLICA, rede.ref_url, peer_url
+    );
+    println!(
+        "REPLICA   origem {} | {} logins, {} canais e {} publicações carregados do disco",
+        srv.origem,
+        srv.store.logins.len(),
+        srv.store.channels.len(),
+        srv.mensagens.len()
     );
 
     cadastrar(&mut srv, &mut rede);
     // Quem entra (ou volta) pede eleição para descobrir ou se tornar o coordenador
     eleicao(&mut srv, &mut rede);
+    // Antes de atender os bots, busca nos outros servidores tudo o que perdeu enquanto estava fora
+    anti_entropia(&mut srv, &mut rede, true);
+    println!(
+        "REPLICA   pronto com {} logins, {} canais e {} publicações",
+        srv.store.logins.len(),
+        srv.store.channels.len(),
+        srv.mensagens.len()
+    );
 
     let mut desde_heartbeat = 0;
     let mut desde_sync = 0;
     let mut ultimo_heartbeat = Instant::now();
+    let mut ultima_anti_entropia = Instant::now();
 
     loop {
         let mut items = [
@@ -771,14 +1312,14 @@ fn main() {
             rede.sub.as_poll_item(zmq::POLLIN),
         ];
         zmq::poll(&mut items, 1000).unwrap();
-        let (cliente, pedido, anuncio) = (
+        let (cliente, pedido, inscricao) = (
             items[0].is_readable(),
             items[1].is_readable(),
             items[2].is_readable(),
         );
 
-        if anuncio {
-            receber_anuncio(&mut srv, &rede.sub);
+        if inscricao {
+            receber_sub(&mut srv, &rede.sub);
         }
         if pedido {
             atender_peer(&mut srv, &rede.peer);
@@ -802,6 +1343,12 @@ fn main() {
             desde_heartbeat = 0;
             ultimo_heartbeat = Instant::now();
             heartbeat(&mut srv, &mut rede);
+        }
+
+        // Anti-entropia: recupera o que se perdeu no Pub/Sub ou enquanto um servidor estava fora
+        if ultima_anti_entropia.elapsed() >= INTERVALO_ANTI_ENTROPIA {
+            ultima_anti_entropia = Instant::now();
+            anti_entropia(&mut srv, &mut rede, false);
         }
 
         if srv
