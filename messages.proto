@@ -2,6 +2,9 @@ syntax = "proto3";
 
 package chat;
 
+// Contrato compartilhado entre bot, broker, proxy, servidores e serviço de referência.
+// Transporte: ZeroMQ. Os tipos abaixo são serializados em binário.
+
 message Login {
   string user = 1;
 }
@@ -42,10 +45,12 @@ message ChannelMessage {
   string channel = 2;
   string user = 3;
   string message = 4;
+  uint64 clock = 5;     // relógio lógico de quem enviou
 }
 
 message Request {
   uint64 timestamp = 1; // ms desde a época Unix
+  uint64 clock = 6;     // relógio lógico de quem enviou
   oneof body {
     Login login = 2;
     ListChannels list_channels = 3;
@@ -56,10 +61,174 @@ message Request {
 
 message Reply {
   uint64 timestamp = 1; // ms desde a época Unix
+  uint64 clock = 6;     // relógio lógico de quem enviou
   oneof body {
     LoginReply login = 2;
     ChannelList channels = 3;
     CreateChannelReply create_channel = 4;
     PublishReply publish = 5;
   }
+}
+
+// ---------- Serviço de referência (Parte 3) ----------
+
+message Register {
+  string name = 1;
+}
+
+message RegisterReply {
+  uint32 rank = 1;
+}
+
+message ListServers {}
+
+message ServerInfo {
+  string name = 1;
+  uint32 rank = 2;
+}
+
+message ServerList {
+  repeated ServerInfo servers = 1;
+}
+
+message Heartbeat {
+  string name = 1;
+}
+
+// Parte 4: a referência não devolve mais a hora (o relógio vem do coordenador).
+message HeartbeatReply {
+  reserved 2;          // antigo time_ms
+  string status = 1;   // "OK", "NAO_CADASTRADO"
+}
+
+message RefRequest {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  oneof body {
+    Register register = 3;
+    ListServers list = 4;
+    Heartbeat heartbeat = 5;
+  }
+}
+
+message RefReply {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  oneof body {
+    RegisterReply register = 3;
+    ServerList list = 4;
+    HeartbeatReply heartbeat = 5;
+  }
+}
+
+// ---------- Comunicação entre servidores (Parte 4) ----------
+
+// REQ: relógio. O relógio de quem pede vai no timestamp do PeerRequest.
+message ClockRequest {
+  string name = 1;
+}
+
+// REP: hora correta, calculada pelo coordenador com o algoritmo de Berkeley.
+message ClockReply {
+  string status = 1;   // "OK", "NAO_COORDENADOR"
+  uint64 time_ms = 2;  // hora correta (ms desde a época Unix)
+}
+
+// REQ: eleição (algoritmo do valentão: enviado aos servidores de rank maior).
+message Election {
+  string name = 1;
+  uint32 rank = 2;
+}
+
+// REP: OK
+message ElectionReply {
+  string status = 1;   // "OK"
+}
+
+message PeerRequest {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  oneof body {
+    ClockRequest clock_request = 3;
+    Election election = 4;
+    SyncRequest sync = 5;
+  }
+}
+
+message PeerReply {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  oneof body {
+    ClockReply clock_reply = 3;
+    ElectionReply election = 4;
+    SyncReply sync = 5;
+  }
+}
+
+// Publicado no tópico "servers" pelo servidor eleito: [servers] [nome do coordenador]
+message Coordinator {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  string name = 3;
+}
+
+// ---------- Replicação (Parte 5) ----------
+
+message LoginRecord {
+  string user = 1;
+}
+
+message ChannelRecord {
+  string name = 1;
+  string created_by = 2;
+}
+
+message MessageRecord {
+  string channel = 1;
+  string user = 2;
+  string message = 3;
+  uint64 request_timestamp = 4; // quando o bot enviou o pedido
+}
+
+// Uma operação de escrita aceita por algum servidor. (origin, seq) identifica o registro.
+message Record {
+  string origin = 1;    // "<servidor>@<início da execução>" que aceitou a escrita
+  uint64 seq = 2;       // número de sequência na origem (1, 2, 3, ...)
+  uint64 timestamp = 3; // hora física (Berkeley) em que a origem aceitou
+  uint64 clock = 4;     // relógio lógico da origem nesse momento
+  oneof data {
+    LoginRecord login = 5;
+    ChannelRecord channel = 6;
+    MessageRecord message = 7;
+  }
+}
+
+// Push: publicado no tópico "replica" a cada escrita aceita: [replica] [Replica]
+message Replica {
+  uint64 timestamp = 1;
+  uint64 clock = 2;
+  Record record = 3;
+}
+
+// Intervalo [first, last] de números de sequência que um servidor já tem.
+message SeqRange {
+  uint64 first = 1;
+  uint64 last = 2;
+}
+
+// Vetor de versões: para cada origem, os intervalos de seq já recebidos.
+message Known {
+  string origin = 1;
+  repeated SeqRange ranges = 2;
+}
+
+// Pull (anti-entropia): REQ: "tenho isto" -> REP: registros que faltam.
+message SyncRequest {
+  string name = 1;
+  repeated Known known = 2;
+}
+
+message SyncReply {
+  repeated Record records = 1;
+  bool more = 2;        // true se ainda há registros (a resposta tem um limite)
 }
