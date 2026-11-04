@@ -35,7 +35,7 @@ Nenhuma interação é necessária: o serviço de referência, o broker e o prox
 | `server1`, `server2`   | Rust      | Atendem login, canais e publicações; persistem e replicam os dados; sincronizam o relógio e elegem o coordenador |
 | `bot_ana`, `bot_bruno` | Python    | Clientes automáticos (bots) |
 
-No `docker-compose.yaml` todos os containers usam `network_mode: host`, então os serviços se encontram por `localhost` e pela porta (ex.: `tcp://localhost:5555`). Os valores padrão no código usam o nome do serviço (ex.: `tcp://broker:5555`) e podem ser trocados pelas variáveis de ambiente (ver abaixo).
+Todos os containers usam a rede criada pelo Docker Compose e se encontram pelo nome do serviço (ex.: `tcp://broker:5555`, `tcp://server2:5602`). Nenhuma porta é publicada no host. Os endereços podem ser trocados pelas variáveis de ambiente (ver abaixo).
 
 ### Portas
 
@@ -128,11 +128,11 @@ O bot usa um `zmq.Poller` sobre o socket SUB e o socket REQ. Assim, enquanto esp
 
 Depois do login, cada bot fica em loop infinito. A cada volta ele:
 
-1. lista os canais. Se existirem menos de 5 e `BOT_CREATE=1`, cria um novo (nome sorteado entre `geral`, `tecnologia`, `jogos`, `musica` e `noticias`);
+1. lista os canais. Se existirem menos de 5, cria um novo (nome sorteado entre `geral`, `tecnologia`, `jogos`, `musica` e `noticias`);
 2. se estiver inscrito em menos de 3 canais, se inscreve em mais um, sorteado da lista;
 3. escolhe um canal da lista e envia 10 mensagens aleatórias, com 1 s de intervalo.
 
-As regras são reavaliadas a cada volta para que os bots cheguem a 3 inscrições e os servidores a 5 canais. Por padrão, o bot_ana cria canais (`BOT_CREATE=1`) e o bot_bruno não (`BOT_CREATE=0`).
+As regras são reavaliadas a cada volta para que os bots cheguem a 3 inscrições e os servidores a 5 canais.
 
 ## Serviço de referência
 
@@ -154,9 +154,9 @@ Há dois tipos de relógio, e cada um tem uma finalidade:
 Cada componente tem um contador `clock`, que vai em todas as mensagens:
 
 - **antes de enviar**, o contador é incrementado e enviado junto com a mensagem;
-- **ao receber**, o contador fica com o **maior** valor entre o seu e o recebido, e depois é incrementado em 1.
+- **ao receber**, o contador fica com o **maior** valor entre o seu e o recebido.
 
-Assim, se uma mensagem causou outra, o valor da primeira é sempre menor que o da segunda. Os bots não enviam o campo `clock` (fica em 0); os servidores e a referência mantêm o relógio lógico. Cada registro replicado guarda o `clock` da origem, usado para desempatar a ordem dos registros.
+Assim, se uma mensagem causou outra, o valor da primeira é sempre menor que o da segunda. Bots, servidores e referência mantêm o relógio lógico. Os bots seguem exatamente a regra do enunciado (`max(local, recebido)`); servidores e referência somam 1 depois do máximo, como no Lamport clássico, o que também preserva a ordem. O bot mostra o `clock` recebido e o relógio local em cada publicação recebida. Cada registro replicado guarda o `clock` da origem, usado para desempatar a ordem dos registros.
 
 ### Relógio físico (algoritmo de Berkeley)
 
@@ -289,19 +289,18 @@ Os servidores também registram os eventos de cada parte, com um prefixo: `ELEI�
 | bot | `BOT_NAME` | `bot_<aleatório>` | nome do bot |
 | bot | `BROKER_URL` | `tcp://broker:5555` | endereço do broker |
 | bot | `PROXY_URL` | `tcp://proxy:5558` | endereço do proxy (inscrições) |
-| bot | `BOT_CREATE` | `1` | `1` cria canais, `0` não cria |
 | servidor | `SERVER_ID` | `1` | número do servidor (nome `server<N>`) |
 | servidor | `BROKER_URL` | `tcp://broker:5556` | endereço do broker (DEALER) |
 | servidor | `PROXY_URL` | `tcp://proxy:5557` | endereço do proxy para publicar (canais, anúncios e réplicas) |
-| servidor | `PROXY_SUB_URL` | `tcp://localhost:5558` | endereço do proxy para assinar `servers` e `replica` |
+| servidor | `PROXY_SUB_URL` | `tcp://proxy:5558` | endereço do proxy para assinar `servers` e `replica` |
 | servidor | `REF_URL` | `tcp://reference:5559` | endereço da referência |
-| servidor | `PEER_HOST` | `localhost` | host dos outros servidores |
+| servidor | `PEER_HOST` | vazio | host dos outros servidores; vazio usa o próprio nome do servidor (`server2`), que é o nome do serviço no Compose |
 | servidor | `PEER_PORT_BASE` | `5600` | o servidor N escuta os outros servidores na porta `PEER_PORT_BASE + N` |
 | servidor | `CLOCK_OFFSET_MS` | `0` | diferença inicial do relógio físico (para testar o Berkeley) |
 | referência | `REF_URL` | `tcp://*:5559` | endereço em que a referência escuta |
 | referência | `HEARTBEAT_TIMEOUT` | `10` | segundos sem heartbeat até remover um servidor |
 
-O endereço de outro servidor é derivado do nome que ele usa na referência: `server<N>` → `tcp://PEER_HOST:(PEER_PORT_BASE + N)`.
+O endereço de outro servidor é derivado do nome que ele usa na referência: `server<N>` → `tcp://server<N>:(PEER_PORT_BASE + N)` (ou `tcp://PEER_HOST:(PEER_PORT_BASE + N)` se `PEER_HOST` for definido).
 
 ## Persistência
 
@@ -332,6 +331,5 @@ data/                       arquivos persistidos pelos servidores
 - **Consistência eventual, não estrita.** Logo depois de uma escrita existe uma janela de milissegundos em que outro servidor ainda não a recebeu. Um bot que cria um canal em um servidor e publica nele em outro, exatamente nessa janela, recebe `CHANNEL_NOT_FOUND`. Antes da replicação isso era comum; agora é raro.
 - **Cada servidor faz uma coisa de cada vez.** Enquanto espera a resposta de outro servidor ou da referência, ele continua atendendo os outros servidores, mas não os bots; com timeouts de 1 s (servidores) e 3 s (referência), um bot pode ter que esperar ou repetir o pedido.
 - **A eleição também roda na inicialização.** Se um servidor inicia antes dos outros, pode virar coordenador sozinho e depois ceder a vez. O sistema converge, mas o log mostra anúncios repetidos.
-- **Os bots não enviam o relógio lógico** (`clock` fica em 0 nas requisições dos bots).
 - **Os nomes dos servidores precisam seguir o padrão `server<N>`**, porque a porta usada entre os servidores é derivada do nome.
 - **Todo o histórico fica em memória** em cada servidor, para responder rápido à anti-entropia. É adequado ao volume do projeto, mas não a um histórico muito grande.
