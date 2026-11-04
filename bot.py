@@ -10,6 +10,7 @@ import messages_pb2 as pb
 BOT_NAME = os.environ.get("BOT_NAME", "bot_" + str(random.randint(1000, 9999)))
 BROKER_URL = os.environ.get("BROKER_URL", "tcp://broker:5555")
 PROXY_URL = os.environ.get("PROXY_URL", "tcp://proxy:5558")
+BOT_CREATE = os.environ.get("BOT_CREATE", "1") == "1"
 
 CHANNEL_POOL = ["geral", "tecnologia", "jogos", "musica", "noticias"]
 FRASES = [
@@ -41,10 +42,6 @@ sub = context.socket(zmq.SUB)
 sub.connect(PROXY_URL)
 inscritos = set()
 
-# Relógio lógico (Lamport): incrementado antes de cada envio e atualizado com o
-# máximo entre o valor local e o recebido em cada mensagem
-relogio = 0
-
 
 def agora_ms():
     return int(time.time() * 1000)
@@ -63,11 +60,6 @@ def mostrar(direcao, msg):
     print(f"[{hora()}] {direcao:<9} {texto}", flush=True)
 
 
-def atualizar_relogio(recebido):
-    global relogio
-    relogio = max(relogio, recebido)
-
-
 def receber_publicacao():
     topico, dados = sub.recv_multipart()
     # O filtro do ZeroMQ é por prefixo, então confere o nome exato do canal
@@ -76,11 +68,9 @@ def receber_publicacao():
     msg = pb.ChannelMessage()
     msg.ParseFromString(dados)
     recebido = agora_ms()
-    atualizar_relogio(msg.clock)
     print(
         f"[{hora()}] PUB       #{msg.channel} <{msg.user}> {msg.message} "
-        f"(enviado {formatar_ms(msg.timestamp)}, recebido {formatar_ms(recebido)}, "
-        f"clock: {msg.clock}, relógio local: {relogio})",
+        f"(enviado {formatar_ms(msg.timestamp)}, recebido {formatar_ms(recebido)})",
         flush=True,
     )
 
@@ -104,9 +94,7 @@ def aguardar(segundos, req=None):
 
 
 def enviar(req):
-    global socket, relogio
-    relogio += 1
-    req.clock = relogio
+    global socket
     req.timestamp = agora_ms()
     mostrar("ENVIADO", req)
     socket.send(req.SerializeToString())
@@ -121,7 +109,6 @@ def enviar(req):
 
     resp = pb.Reply()
     resp.ParseFromString(dados)
-    atualizar_relogio(resp.clock)
     mostrar("RECEBIDO", resp)
     return resp
 
@@ -149,7 +136,7 @@ while True:
         continue
 
     # Menos de 5 canais: cria um novo
-    if len(canais) < 5:
+    if BOT_CREATE and len(canais) < 5:
         disponiveis = [c for c in CHANNEL_POOL if c not in canais]
         if disponiveis:
             req = pb.Request()
