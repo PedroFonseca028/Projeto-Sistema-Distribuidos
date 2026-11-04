@@ -133,9 +133,15 @@ struct Rede {
 
 impl Rede {
     // Endereço do REP de outro servidor: o nome é "server<N>" e a porta é PEER_PORT_BASE + N.
+    // Na rede do docker-compose o host é o próprio nome do servidor (nome do serviço).
     fn endereco(&self, nome: &str) -> Option<String> {
         let id: u32 = nome.strip_prefix("server")?.parse().ok()?;
-        Some(format!("tcp://{}:{}", self.peer_host, self.peer_base + id))
+        let host = if self.peer_host.is_empty() {
+            nome
+        } else {
+            self.peer_host.as_str()
+        };
+        Some(format!("tcp://{}:{}", host, self.peer_base + id))
     }
 }
 
@@ -1200,9 +1206,10 @@ fn main() {
     let broker_url = env::var("BROKER_URL").unwrap_or_else(|_| "tcp://broker:5556".to_string());
     let proxy_url = env::var("PROXY_URL").unwrap_or_else(|_| "tcp://proxy:5557".to_string());
     let ref_url = env::var("REF_URL").unwrap_or_else(|_| "tcp://reference:5559".to_string());
-    // Os padrões abaixo seguem o docker-compose (network_mode: host, tudo em localhost)
-    let sub_url = env::var("PROXY_SUB_URL").unwrap_or_else(|_| "tcp://localhost:5558".to_string());
-    let peer_host = env::var("PEER_HOST").unwrap_or_else(|_| "localhost".to_string());
+    let sub_url = env::var("PROXY_SUB_URL").unwrap_or_else(|_| "tcp://proxy:5558".to_string());
+    // Vazio (padrão): o host de outro servidor é o próprio nome dele ("server2"), que é o nome
+    // do serviço na rede do docker-compose. Pode ser fixado (ex.: "localhost") para rodar fora dele.
+    let peer_host = env::var("PEER_HOST").unwrap_or_default();
     let peer_base: u32 = env::var("PEER_PORT_BASE")
         .ok()
         .and_then(|v| v.parse().ok())
